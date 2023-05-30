@@ -12,7 +12,7 @@ export default defineConfig({
         enabled: true
       },
       workbox: {
-        globPatterns: ['**/*,{js,scss,html}']
+        globPatterns: ['**/*,{ts,js,scss,css,html}']
       },
       manifest: {
         name: 'My Awesome App',
