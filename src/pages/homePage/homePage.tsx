@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { setUser } from "../../redux/userSlice";
 import Overview from "./components/overview/overview";
+import Navbar from "./components/navbar/navbar";
 
 function HomePage() {
   const user = useSelector((state: RootState) => state.user)
@@ -28,6 +29,7 @@ function HomePage() {
 
   return (
     <div className="home-page">
+      <Navbar user={user}/>
       <Overview userId={user.id} />
     </div>
   )

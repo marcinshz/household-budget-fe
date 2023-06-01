@@ -3,4 +3,7 @@
     max-width: 960px;
     margin:auto;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap:24px;
 }
