@@ -1,4 +1,4 @@
-import { CreateWalletDto, UserAuthenticatedDto, UserCredentialsDto, Wallet } from './types';
+import { Category, CreateCategoryDto, CreateWalletDto, UserAuthenticatedDto, UserCredentialsDto, Wallet } from './types';
 const api_url = "http://localhost:3000/"
 
 
@@ -38,4 +38,15 @@ export const createWallet = async (walletData: CreateWalletDto): Promise<Wallet>
 }
 export const getWallets = async (userId: string): Promise<Wallet[]> => {
     return await fetch(api_url + "wallet/user-wallets/" + userId).then(res => res.json()).then(data => { return data; })
+}
+
+//CATEGORY CALLS
+export const createCategory = async (createCategoryDto: CreateCategoryDto): Promise<Category> => {
+    return await fetch(api_url + "category/custom-category", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(createCategoryDto)
+    }).then(res => res.json()).then(data => {return data;})
 }

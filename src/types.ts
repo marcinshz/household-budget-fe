@@ -26,6 +26,18 @@ export class CreateWalletDto {
     name: string;
 }
 
+export class CreateCategoryDto {
+    constructor(name: string, userId: string, type: string) {
+        this.name = name;
+        this.userId = userId;
+        this.type = type;
+    }
+
+    name: string;
+    userId: string;
+    type: string;
+}
+
 //CLASSES
 export interface User {
     id: string;
@@ -37,8 +49,6 @@ export interface Wallet {
     id: string;
     name: string;
     value: number;
-    incomes: Income[];
-    expenses: Expense[];
 }
 export interface Category {
     id: string;
@@ -59,3 +69,4 @@ export interface Expense {
     note: string;
     createdAt: Date;
 }
+

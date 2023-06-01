@@ -26,10 +26,22 @@
         text-align: center;
         margin-bottom: 32px;
     }
-    &__buttons{
+    &__buttons {
         display: flex;
         flex-direction: column;
-        gap:8px;
+        gap: 8px;
         align-items: start;
+    }
+}
+
+.add-category {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+    &__category-name-container {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
     }
 }
