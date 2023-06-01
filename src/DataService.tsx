@@ -1,6 +1,8 @@
-import { UserAuthenticatedDto, UserCredentialsDto } from './types';
+import { CreateWalletDto, UserAuthenticatedDto, UserCredentialsDto, Wallet } from './types';
 const api_url = "http://localhost:3000/"
 
+
+//USER CALLS
 export const createAccount = async (credentials: UserCredentialsDto): Promise<UserAuthenticatedDto> => {
     return await fetch(api_url + "user", {
         method: 'POST',
@@ -22,4 +24,18 @@ export const signIn = async (credentials: UserCredentialsDto): Promise<UserAuthe
         },
         body: JSON.stringify(credentials)
     }).then(res => res.json()).then(data => { return data; })
+}
+
+//WALLET CALLS
+export const createWallet = async (walletData: CreateWalletDto): Promise<Wallet> => {
+    return await fetch(api_url + "wallet", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(walletData)
+    }).then(res => res.json()).then(data => { return data; })
+}
+export const getWallets = async (userId: string): Promise<Wallet[]> => {
+    return await fetch(api_url + "wallet/user-wallets/" + userId).then(res => res.json()).then(data => { return data; })
 }

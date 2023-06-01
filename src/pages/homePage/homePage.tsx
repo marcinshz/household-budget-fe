@@ -1,13 +1,14 @@
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
-import './App.css'
+import './homePage.css'
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "./redux/store";
-import { setUser } from "./redux/userSlice";
+import { RootState } from "../../redux/store";
+import { setUser } from "../../redux/userSlice";
+import Overview from "./components/overview/overview";
 
-function Home() {
+function HomePage() {
   const user = useSelector((state: RootState) => state.user)
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -26,10 +27,10 @@ function Home() {
 
 
   return (
-    <div className="home">
-      <div onClick={() => console.log(user)}>test</div>
+    <div className="home-page">
+      <Overview userId={user.id} />
     </div>
   )
 }
 
-export default Home
+export default HomePage

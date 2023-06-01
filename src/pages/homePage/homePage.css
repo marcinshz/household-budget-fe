@@ -1,0 +1,6 @@
+.home-page{
+    width: 100vw;
+    max-width: 960px;
+    margin:auto;
+    overflow-x: hidden;
+}

@@ -1,14 +1,16 @@
-import { applyMiddleware, configureStore } from "@reduxjs/toolkit";
+import { applyMiddleware, combineReducers, configureStore } from "@reduxjs/toolkit";
 import { userSlice } from "./userSlice";
 import thunkMiddleware from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
+import { walletSlice } from "./walletSlice";
 
 const composedEnhancer = composeWithDevTools(applyMiddleware(thunkMiddleware))
 
 const store = configureStore({
-    reducer: {
-        user: userSlice.reducer
-    },
+    reducer: combineReducers({
+        user: userSlice.reducer,
+        wallets: walletSlice.reducer,
+    }),
     enhancers: [composedEnhancer]
 })
 
