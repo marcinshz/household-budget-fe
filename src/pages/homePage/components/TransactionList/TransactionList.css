@@ -1,0 +1,58 @@
+.transaction-list {
+  border-top: 1px solid #6366f1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+  padding: 8px 0;
+  width: 100%;
+}
+.transaction-list__content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.transaction-list__content__header {
+  align-items: center;
+  display: flex;
+  height: 40px;
+  justify-content: space-between;
+}
+.transaction-list__content__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style-type: none;
+  margin: 0;
+  overflow-y: scroll;
+  padding: 0;
+}
+.transaction-list__content__list__item {
+  align-items: center;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 24px;
+}
+.transaction-list__content__list__item:hover {
+  background-color: #e7e7e7;
+}
+.transaction-list__content__list__item__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.transaction-list__content__list__item__text__category {
+  font-size: 16px;
+  font-weight: 700;
+}
+.transaction-list__content__list__item__text__timestamp {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.transaction-list .p-paginator {
+  justify-self: flex-end;
+}
+
+/*# sourceMappingURL=TransactionList.css.map */

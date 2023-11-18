@@ -1,0 +1,17 @@
+.create-transaction-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.create-transaction-modal__container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.create-transaction-modal__container__input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/*# sourceMappingURL=createTransactionModal.css.map */

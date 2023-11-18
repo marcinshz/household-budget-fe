@@ -1,12 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { createAccountThunk, signInThunk } from "./thunks";
+import {createSlice} from "@reduxjs/toolkit";
+import {createAccountThunk, signInThunk} from "./thunks";
 
 export const userSlice = createSlice({
     name: 'user',
     initialState: {
         id: "",
         username: "",
-        password: "",
         access_token: ""
     },
     reducers: {
@@ -17,18 +16,18 @@ export const userSlice = createSlice({
     },
     extraReducers: builder => {
         builder.addCase(signInThunk.fulfilled, (state, action) => {
-            const { user, access_token } = action.payload;
-            state = { id: user.id, username: user.username, password: user.password, access_token }
+            const {user, access_token} = action.payload;
+            state = {id: user.id, username: user.username, access_token}
             return state;
         })
         builder.addCase(createAccountThunk.fulfilled, (state, action) => {
-            const { user, access_token } = action.payload;
-            state = { id: user.id, username: user.username, password: user.password, access_token }
+            const {user, access_token} = action.payload;
+            state = {id: user.id, username: user.username, access_token}
             return state;
         })
     }
 })
 
-export const { setUser } = userSlice.actions
+export const {setUser} = userSlice.actions
 
 export default userSlice.reducer

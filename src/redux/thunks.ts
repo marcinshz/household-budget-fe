@@ -1,7 +1,6 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { CreateWalletDto, UserAuthenticatedDto, UserCredentialsDto, Wallet } from "../types";
-import { createWallet, getWallets, signIn } from "../DataService";
-import { createAccount } from "../DataService";
+import {createAsyncThunk} from "@reduxjs/toolkit";
+import {Category, CreateCategoryDto, CreateWalletDto, UserAuthenticatedDto, UserCredentialsDto, Wallet} from "../types";
+import {createAccount, createCategory, createWallet, getCategories, getWallets, signIn} from "../DataService";
 
 
 //USER THUNKS
@@ -31,5 +30,20 @@ export const getWalletsThunk = createAsyncThunk(
     'wallets/getWallets',
     async (userId: string): Promise<Wallet[]> => {
         return await getWallets(userId);
+    }
+)
+
+//CATEGORY THUNKS
+export const createCategoryThunk = createAsyncThunk(
+    'categories/createCategory',
+    async (categoryData: CreateCategoryDto): Promise<Category> => {
+        return await createCategory(categoryData);
+    }
+)
+
+export const getCategoriesThunk = createAsyncThunk(
+    'categories/getCategories',
+    async (userId: string): Promise<{ incomes: Category[], expenses: Category[] }> => {
+        return await getCategories(userId);
     }
 )

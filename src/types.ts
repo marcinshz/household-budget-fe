@@ -1,11 +1,12 @@
 //DTOS
 export class UserCredentialsDto {
+    username: string;
+    password: string;
+
     constructor(username: string, password: string) {
         this.username = username;
         this.password = password
     }
-    username: string;
-    password: string;
 }
 
 export interface UserAuthenticatedDto {
@@ -18,41 +19,70 @@ export interface UserAuthenticatedDto {
 }
 
 export class CreateWalletDto {
+    userId: string;
+    name: string;
+    balance: number;
+
     constructor(name: string, userId: string) {
         this.userId = userId;
         this.name = name;
+        this.balance = 0;
     }
-    userId: string;
+}
+
+export class CreateTransactionDto {
+    walletId: string;
     name: string;
+    value: number;
+    categoryId: string;
+    transactionType: string;
+    note: string;
+
+    constructor(walletId: string, name: string, value: number, categoryId: string, transactionType: string, note: string) {
+        this.walletId = walletId;
+        this.name = name;
+        this.value = value;
+        this.categoryId = categoryId;
+        this.transactionType = transactionType;
+        this.note = note;
+    }
 }
 
 export class CreateCategoryDto {
+    name: string;
+    userId: string;
+    type: string;
+
     constructor(name: string, userId: string, type: string) {
         this.name = name;
         this.userId = userId;
         this.type = type;
     }
-
-    name: string;
-    userId: string;
-    type: string;
 }
 
 //CLASSES
 export interface User {
     id: string;
     username: string;
-    password: string;
 }
 
 export interface Wallet {
     id: string;
     name: string;
-    value: number;
+    balance: number;
 }
+
+export interface WalletListItem {
+    id: string;
+    name: string;
+    balance: number;
+    checked: boolean;
+}
+
 export interface Category {
     id: string;
     name: string;
+    type: string;
 }
 
 export interface Income {
@@ -61,12 +91,24 @@ export interface Income {
     name: string;
     note: string;
     createdAt: Date;
+    value: number;
 }
+
 export interface Expense {
     category: Category;
     id: string;
     name: string;
     note: string;
     createdAt: Date;
+    value: number;
 }
 
+export enum TransactionType {
+    INCOME = "income",
+    EXPENSE = "expense"
+}
+
+export type TransactionsGrouped = {
+    labels: string[];
+    datasets: { data: number[] }[];
+}

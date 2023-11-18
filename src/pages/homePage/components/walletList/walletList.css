@@ -1,0 +1,42 @@
+.wallet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.wallet-list__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.wallet-list__cards {
+  display: grid;
+  grid-gap: 16px;
+  grid-template-columns: repeat(auto-fit, calc(50% - 8px));
+}
+@media screen and (min-width: 960px) {
+  .wallet-list__cards {
+    grid-template-columns: repeat(auto-fit, calc(33.3333333333% - 10.6666666667px));
+  }
+}
+@media screen and (min-width: 1133px) {
+  .wallet-list__cards {
+    grid-template-columns: repeat(auto-fit, calc(25% - 12px));
+  }
+}
+.wallet-list__cards--empty {
+  text-align: center;
+}
+
+.add-wallet {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.add-wallet__wallet-name-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/*# sourceMappingURL=walletList.css.map */

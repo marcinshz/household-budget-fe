@@ -1,0 +1,17 @@
+.checkbox-card {
+  min-width: 160px;
+}
+.checkbox-card:hover {
+  cursor: pointer;
+}
+.checkbox-card .p-card-content {
+  padding: 8px 0;
+  margin: 0;
+}
+.checkbox-card .p-card-body {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+/*# sourceMappingURL=CheckboxCard.css.map */
