@@ -56,7 +56,6 @@ function TransactionVisualisations({transactionsGrouped, year, current, month, d
 
     useEffect(() => {
         createVisualisationsData(year, current, month, day);
-        console.log(transactionsGrouped);
     }, [transactionsGrouped]);
 
     function createVisualisationsData(year: number, current: boolean, month?: number, day?: number) {

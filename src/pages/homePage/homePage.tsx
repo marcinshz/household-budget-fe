@@ -2,20 +2,21 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import './homePage.scss'
 import {useEffect, useState} from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../redux/store";
 import WalletList from "./components/walletList/walletList.tsx";
 import Navbar from "./components/navbar/navbar";
 import {getOverview} from "../../DataService.tsx";
-import {Expense, Income, TransactionsGrouped, WalletListItem} from "../../types.ts";
+import {Expense, Income, TransactionsGrouped} from "../../types.ts";
 import TransactionsSection from "./components/TransactionsSection/TransactionsSection.tsx";
 import TransactionVisualisations from "./components/TransactionVisualisations/TransactionVisualisations.tsx";
+import {toggleWallet} from "../../redux/walletSlice.ts";
+import {cloneDeep} from 'lodash';
 
 function HomePage() {
     const {user, wallets} = useSelector((state: RootState) => {
         return {user: state.user, wallets: state.wallets};
     })
-    const [walletList, setWalletList] = useState<WalletListItem[]>([]);
     const [transactions, setTransactions] = useState<{
         incomes: Income[],
         expenses: Expense[]
@@ -27,44 +28,35 @@ function HomePage() {
         incomes: TransactionsGrouped,
         expenses: TransactionsGrouped
     }>()
-
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        const tmp = wallets.map((wallet) => {
-            return {
-                ...wallet,
-                checked: true
-            }
-        })
-        setWalletList(tmp);
-    }, [wallets])
-    useEffect(() => {
-        if (walletList.length)
+        if (wallets.length)
             getIncomeExpenseOverview();
-    }, [walletList]);
+    }, [wallets]);
 
 
     async function getIncomeExpenseOverview() {
-        let tmp = await getOverview(user.id, walletList);
+        const {incomes, incomesGrouped, expenses, expensesGrouped} = await getOverview(user.id, wallets);
         setTransactions({
-            incomes: tmp.incomes,
-            expenses: tmp.expenses
+            incomes: incomes,
+            expenses: expenses
         });
-        setTransactionsGrouped({incomes: tmp.incomesGrouped, expenses: tmp.expensesGrouped});
+        setTransactionsGrouped({incomes: incomesGrouped, expenses: expensesGrouped});
     }
 
 
     function handleWalletChange(index: number) {
-        let list = [...walletList];
+        let list = cloneDeep(wallets);
         list[index].checked = !list[index].checked;
-        setWalletList(list);
+        dispatch(toggleWallet(list));
     }
 
     return (
         <div className="home-page">
             <Navbar user={user}/>
             <div className="home-page__content">
-                <WalletList walletList={walletList} handleWalletChange={handleWalletChange}/>
+                <WalletList walletList={wallets} handleWalletChange={handleWalletChange}/>
                 <TransactionsSection
                     incomes={transactions.incomes}
                     expenses={transactions.expenses}
