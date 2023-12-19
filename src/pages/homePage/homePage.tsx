@@ -7,7 +7,7 @@ import {RootState} from "../../redux/store";
 import WalletList from "./components/walletList/walletList.tsx";
 import Navbar from "./components/navbar/navbar";
 import {getOverview} from "../../DataService.tsx";
-import {Expense, Income, TransactionsGroupedTest, WalletListItem} from "../../types.ts";
+import {Expense, Income, TransactionsGrouped, WalletListItem} from "../../types.ts";
 import TransactionsSection from "./components/TransactionsSection/TransactionsSection.tsx";
 import TransactionVisualisations from "./components/TransactionVisualisations/TransactionVisualisations.tsx";
 
@@ -24,8 +24,8 @@ function HomePage() {
         expenses: []
     });
     const [transactionsGrouped, setTransactionsGrouped] = useState<{
-        incomes: TransactionsGroupedTest,
-        expenses: TransactionsGroupedTest
+        incomes: TransactionsGrouped,
+        expenses: TransactionsGrouped
     }>()
 
 
@@ -70,8 +70,13 @@ function HomePage() {
                     expenses={transactions.expenses}
                 />
                 <div className={"home-page__content__this-month"}>
-
-                    {transactionsGrouped && <TransactionVisualisations transactionsGrouped={transactionsGrouped}/>}
+                    {transactionsGrouped &&
+                        <TransactionVisualisations
+                            transactionsGrouped={transactionsGrouped}
+                            current={true}
+                            year={new Date().getFullYear()}
+                            month={new Date().getMonth() + 1}
+                        />}
                 </div>
             </div>
         </div>

@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {PieChartData, StackBarData, StackBarVariant, TransactionsGroupedTest} from "../../../../types.ts";
+import {PieChartData, StackBarData, StackBarVariant, TransactionsGrouped} from "../../../../types.ts";
 import {Chart} from "primereact/chart";
 import {SelectButton} from "primereact/selectbutton";
 import './TransactionVisualisations.scss';
@@ -7,17 +7,19 @@ import {Button} from "primereact/button";
 
 type TransactionVisualisationsProps = {
     transactionsGrouped: {
-        incomes: TransactionsGroupedTest,
-        expenses: TransactionsGroupedTest
-    }
+        incomes: TransactionsGrouped,
+        expenses: TransactionsGrouped,
+    },
+    year: number,
+    current: boolean,
+    month: number,
+    day?: number
 }
 
 const date = new Date();
-const currentYear = date.getFullYear();
-const currentMonth = date.getMonth() + 1;
 const currentDay = date.getDate();
 
-function TransactionVisualisations({transactionsGrouped}: TransactionVisualisationsProps) {
+function TransactionVisualisations({transactionsGrouped, year, current, month, day}: TransactionVisualisationsProps) {
     const [transactionVariant, setTransactionVariant] = useState<StackBarVariant>(StackBarVariant.INCOME)
     const [stackBarData, setStackBarData] = useState<{
         incomes: StackBarData,
@@ -55,142 +57,312 @@ function TransactionVisualisations({transactionsGrouped}: TransactionVisualisati
     }>()
 
     useEffect(() => {
-        createVisualisationsData();
+        createVisualisationsData(year, current, month, day);
+        console.log(transactionsGrouped);
     }, [transactionsGrouped]);
 
-    function createVisualisationsData() {
+    function createVisualisationsData(year: number, current: boolean, month?: number, day?: number) {
         const {incomes, expenses} = transactionsGrouped;
+
         let incomeCategoryLabels: string[] = [];
         let expenseCategoryLabels: string[] = [];
         let incomeCategoryValues: number[][] = [];
         let expenseCategoryValues: number[][] = [];
+        let incomeTotalValue = 0;
+        let expenseTotalValue = 0;
 
-        let tmpPieChartData = pieChartData;
+        let incomesPieChartData: PieChartData = {
+            labels: [],
+            datasets: []
+        };
+        let expensesPieChartData: PieChartData = {
+            labels: [],
+            datasets: []
+        };
+        let incomesStackBarData: StackBarData = {
+            labels: [],
+            datasets: []
+        }
+        let expensesStackBarData: StackBarData = {
+            labels: [],
+            datasets: []
+        }
 
-        if (incomes && incomes[currentYear] && incomes[currentYear].months && incomes[currentYear].months[currentMonth] && incomes[currentYear].months[currentMonth].overview) {
-            //PieChart Data
-            tmpPieChartData.incomes = {
-                labels: incomes[currentYear].months[currentMonth].overview.labels,
-                datasets: [
-                    {
+        if (incomes && incomes[year] && incomes[year].overview) {
+            let labels: string[] = [];
+            if (!month) {
+                //przygotuj dla roku
+                //PieChart Data
+                incomesPieChartData = {
+                    labels: incomes[year].overview.labels,
+                    datasets: [{
                         label: 'Incomes',
-                        data: incomes[currentYear].months[currentMonth].overview.values
-                    }
-                ]
-            }
-
-            //StackBarData
-            incomes[currentYear].months[currentMonth].overview.labels.forEach((label) => {
-                if (!incomeCategoryLabels.includes(label)) {
-                    incomeCategoryLabels.push(label);
+                        data: incomes[year].overview.values
+                    }]
                 }
-            })
-            incomeCategoryValues = Array.from({length: incomeCategoryLabels.length}, () => Array.from({length: currentDay}, () => 0));
-            incomeCategoryLabels.forEach((label, index) => {
-                for (const [_, day] of Object.entries(incomes[currentYear].months[currentMonth].days)) {
-                    day.list.forEach((transaction) => {
-                        const tmpId = new Date(transaction.createdAt).getDate() - 1;
-                        if (label === transaction.category.name) {
-                            incomeCategoryValues[index][tmpId] = incomeCategoryValues[index][tmpId] + transaction.value;
+
+                //StackBarData
+                incomes[year].overview.labels.forEach((label) => {
+                    if (!incomeCategoryLabels.includes(label)) {
+                        incomeCategoryLabels.push(label);
+                    }
+                })
+                incomeCategoryValues = Array.from({length: incomeCategoryLabels.length}, () => Array.from({length: 12}, () => 0));
+                incomeCategoryLabels.forEach((label, index) => {
+                    for (const [key, month] of Object.entries(incomes[year].months)) {
+                        month.overview.labels.forEach((overviewLabel: string, overviewIndex: number) => {
+                            if (overviewLabel === label) {
+                                incomeCategoryValues[index][parseInt(key) - 1] = incomeCategoryValues[index][parseInt(key) - 1] + month.overview.values[overviewIndex];
+                            }
+                        })
+                    }
+                })
+                labels = Array.from({length: 12}, (_, index) => (index + 1).toString() + "." + year);
+                incomesStackBarData = {
+                    labels,
+                    datasets: incomeCategoryLabels.map((label, index) => {
+                        return {
+                            label: label,
+                            data: incomeCategoryValues[index],
+                            stack: "Incomes"
                         }
                     })
                 }
-            })
 
-        }
+                //TotalValueBarData
+                incomesStackBarData.datasets.forEach((dataset) => {
+                    dataset.data.forEach((value) => {
+                        incomeTotalValue = incomeTotalValue + value;
+                    })
+                })
 
-        if (expenses && expenses[currentYear] && expenses[currentYear].months && expenses[currentYear].months[currentMonth] && expenses[currentYear].months[currentMonth].overview) {
-            //PieChart Data
-            tmpPieChartData.expenses = {
-                labels: expenses[currentYear].months[currentMonth].overview.labels,
-                datasets: [
-                    {
-                        label: 'Incomes',
-                        data: expenses[currentYear].months[currentMonth].overview.values
+            } else {
+                //przygotuj dla miesiąca
+                if (!day) {
+                    if (incomes[year].months && incomes[year].months[month] && incomes[year].months[month].overview) {
+                        //PieChart Data
+                        incomesPieChartData = {
+                            labels: incomes[year].months[month].overview.labels,
+                            datasets: [
+                                {
+                                    label: 'Incomes',
+                                    data: incomes[year].months[month].overview.values
+                                }
+                            ]
+                        }
+
+                        //StackBarData
+                        incomes[year].months[month].overview.labels.forEach((label) => {
+                            if (!incomeCategoryLabels.includes(label)) {
+                                incomeCategoryLabels.push(label);
+                            }
+                        })
+                        incomeCategoryValues = Array.from({length: incomeCategoryLabels.length}, () => Array.from({length: current ? currentDay : new Date(year, month, 0).getDate()}, () => 0));
+                        incomeCategoryLabels.forEach((label, index) => {
+                            for (const [key, day] of Object.entries(incomes[year].months[month].days)) {
+                                day.overview.labels.forEach((overviewLabel: string, overviewIndex: number) => {
+                                    if (overviewLabel === label) {
+                                        incomeCategoryValues[index][parseInt(key) - 1] = incomeCategoryValues[index][parseInt(key) - 1] + day.overview.values[overviewIndex];
+                                    }
+                                })
+                            }
+                        })
+
+                        labels = Array.from({length: currentDay}, (_, index) => (index + 1).toString() + "." + month);
+
+                        incomesStackBarData = {
+                            labels,
+                            datasets: incomeCategoryLabels.map((label, index) => {
+                                return {
+                                    label: label,
+                                    data: incomeCategoryValues[index],
+                                    stack: "Incomes"
+                                }
+                            })
+                        }
+
+                        //TotalValueBarData
+                        incomesStackBarData.datasets.forEach((dataset) => {
+                            dataset.data.forEach((value) => {
+                                incomeTotalValue = incomeTotalValue + value;
+                            })
+                        })
                     }
-                ]
-            }
+                } else {
+                    //przygotuj dla dnia
+                    if (incomes[year].months && incomes[year].months[month] && incomes[year].months[month].days && incomes[year].months[month].days[day]) {
+                        //PieChart Data
+                        incomesPieChartData = {
+                            labels: incomes[year].months[month].days[day].overview.labels,
+                            datasets: [
+                                {
+                                    label: 'Incomes',
+                                    data: incomes[year].months[month].days[day].overview.values
+                                }
+                            ]
+                        }
 
-            //StackBarData
-            expenses[currentYear].months[currentMonth].overview.labels.forEach((label) => {
-                if (!expenseCategoryLabels.includes(label)) {
-                    expenseCategoryLabels.push(label);
+                        //bez StackBarData dla dnia
+
+                        //TotalValueBarData
+                        incomes[year].months[month].days[day].overview.values.forEach((value) => {
+                            incomeTotalValue = incomeTotalValue + value;
+                        })
+                    }
                 }
-            })
-            expenseCategoryValues = Array.from({length: expenseCategoryLabels.length}, () => Array.from({length: currentDay}, () => 0));
-            expenseCategoryLabels.forEach((label, index) => {
-                for (const [_, day] of Object.entries(expenses[currentYear].months[currentMonth].days)) {
-                    day.list.forEach((transaction) => {
-                        const tmpId = new Date(transaction.createdAt).getDate() - 1;
-                        if (label === transaction.category.name) {
-                            expenseCategoryValues[index][tmpId] = expenseCategoryValues[index][tmpId] + transaction.value;
+
+            }
+        }
+        if (expenses && expenses[year] && expenses[year].overview) {
+            let labels: string[] = [];
+            if (!month) {
+                //przygotuj dla roku
+                //PieChart Data
+                expensesPieChartData = {
+                    labels: expenses[year].overview.labels,
+                    datasets: [{
+                        label: 'Expenses',
+                        data: expenses[year].overview.values
+                    }]
+                }
+
+                //StackBarData
+                expenses[year].overview.labels.forEach((label) => {
+                    if (!expenseCategoryLabels.includes(label)) {
+                        expenseCategoryLabels.push(label);
+                    }
+                })
+                expenseCategoryValues = Array.from({length: expenseCategoryLabels.length}, () => Array.from({length: 12}, () => 0));
+                expenseCategoryLabels.forEach((label, index) => {
+                    for (const [key, month] of Object.entries(expenses[year].months)) {
+                        month.overview.labels.forEach((overviewLabel: string, overviewIndex: number) => {
+                            if (overviewLabel === label) {
+                                expenseCategoryValues[index][parseInt(key) - 1] = expenseCategoryValues[index][parseInt(key) - 1] + month.overview.values[overviewIndex];
+                            }
+                        })
+                    }
+                })
+
+                labels = Array.from({length: 12}, (_, index) => (index + 1).toString() + "." + year);
+                //here
+                expensesStackBarData = {
+                    labels,
+                    datasets: expenseCategoryLabels.map((label, index) => {
+                        return {
+                            label: label,
+                            data: expenseCategoryValues[index],
+                            stack: "Incomes"
                         }
                     })
                 }
-            })
-        }
-        const dayLabels = Array.from({length: currentDay}, (_, index) => (index + 1).toString() + "." + currentMonth);
 
-        let incomeStackData: StackBarData = {
-            labels: dayLabels,
-            datasets: incomeCategoryLabels.map((label, index) => {
-                return {
-                    label: label,
-                    data: incomeCategoryValues[index],
-                    stack: "Incomes"
+                //TotalValueBarData
+                expensesStackBarData.datasets.forEach((dataset) => {
+                    dataset.data.forEach((value) => {
+                        expenseTotalValue = expenseTotalValue + value;
+                    })
+                })
+            } else {
+                //przygotuj dla miesiąca
+                if (!day) {
+                    if (expenses[year].months && expenses[year].months[month] && expenses[year].months[month].overview) {
+                        //PieChart Data
+                        expensesPieChartData = {
+                            labels: expenses[year].months[month].overview.labels,
+                            datasets: [
+                                {
+                                    label: 'Incomes',
+                                    data: expenses[year].months[month].overview.values
+                                }
+                            ]
+                        }
+
+                        //StackBarData
+                        expenses[year].months[month].overview.labels.forEach((label) => {
+                            if (!expenseCategoryLabels.includes(label)) {
+                                expenseCategoryLabels.push(label);
+                            }
+                        })
+                        expenseCategoryValues = Array.from({length: expenseCategoryLabels.length}, () => Array.from({length: current ? currentDay : new Date(year, month, 0).getDate()}, () => 0));
+                        expenseCategoryLabels.forEach((label, index) => {
+                            for (const [key, day] of Object.entries(expenses[year].months[month].days)) {
+                                day.overview.labels.forEach((overviewLabel: string, overviewIndex: number) => {
+                                    if (overviewLabel === label) {
+                                        expenseCategoryValues[index][parseInt(key) - 1] = expenseCategoryValues[index][parseInt(key) - 1] + day.overview.values[overviewIndex];
+                                    }
+                                })
+                            }
+                        })
+
+                        labels = Array.from({length: currentDay}, (_, index) => (index + 1).toString() + "." + month);
+
+                        expensesStackBarData = {
+                            labels,
+                            datasets: expenseCategoryLabels.map((label, index) => {
+                                return {
+                                    label: label,
+                                    data: expenseCategoryValues[index],
+                                    stack: "Incomes"
+                                }
+                            })
+                        }
+                        console.log('stak', expensesStackBarData)
+
+                        //TotalValueBarData
+                        expensesStackBarData.datasets.forEach((dataset) => {
+                            dataset.data.forEach((value) => {
+                                expenseTotalValue = expenseTotalValue + value;
+                            })
+                        })
+                    }
+                } else {
+                    //przygotuj dla dnia
+                    if (expenses[year].months && expenses[year].months[month] && expenses[year].months[month].days && expenses[year].months[month].days[day]) {
+                        //PieChart Data
+                        expensesPieChartData = {
+                            labels: expenses[year].months[month].days[day].overview.labels,
+                            datasets: [
+                                {
+                                    label: 'Incomes',
+                                    data: expenses[year].months[month].days[day].overview.values
+                                }
+                            ]
+                        }
+
+                        //bez StackBarData dla dnia
+
+                        //TotalValueBarData
+                        expenses[year].months[month].days[day].overview.values.forEach((value) => {
+                            expenseTotalValue = expenseTotalValue + value;
+                        })
+                    }
                 }
-            })
+
+            }
         }
-
-        let expenseStackData: StackBarData = {
-            labels: dayLabels,
-            datasets: expenseCategoryLabels.map((label, index) => {
-                return {
-                    label: label,
-                    data: expenseCategoryValues[index],
-                    stack: "Expenses"
-                }
-            })
-        }
-
-        setStackBarData({
-            incomes: incomeStackData,
-            expenses: expenseStackData
-        })
-        setPieChartData(tmpPieChartData);
-
-        //TotalValueBarData
-        let tmp = 0;
-        let totalValues = [];
-
-        incomeStackData.datasets.forEach((dataset) => {
-            dataset.data.forEach((value) => {
-                tmp = tmp + value;
-            })
-        })
-        totalValues.push(tmp);
-        tmp = 0;
-        expenseStackData.datasets.forEach((dataset) => {
-            dataset.data.forEach((value) => {
-                tmp = tmp + value;
-            })
-        })
-        totalValues.push(tmp);
-
         setTotalValueBarData({
             labels: ["Total values"],
             datasets: [
                 {
-                    data: [totalValues[0]],
+                    data: [incomeTotalValue],
                     backgroundColor: ["green"],
                     label: "Incomes"
                 },
                 {
-                    data: [totalValues[1]],
+                    data: [expenseTotalValue],
                     label: "Expenses",
                     backgroundColor: ["red"],
                 }
             ]
+        })
+        setPieChartData({
+            incomes: incomesPieChartData,
+            expenses: expensesPieChartData
+        })
+
+        setStackBarData({
+            expenses: expensesStackBarData,
+            incomes: incomesStackBarData
         })
     }
 
@@ -202,6 +374,7 @@ function TransactionVisualisations({transactionsGrouped}: TransactionVisualisati
             </div>
             <div className="transaction-visualisations__row">
                 <div className="transaction-visualisations__pie-chart">
+                    {/*TODO dodać coś, co wyświetli komunikat ze nie ma danych jezeli wykres bd pusty. Można to określić po totalValue*/}
                     {pieChartData && <Chart
                         data={transactionVariant === StackBarVariant.INCOME ? pieChartData.incomes : pieChartData.expenses}
                         type="pie" options={{

@@ -122,7 +122,7 @@ export type PieChartData = {
     }[]
 }
 
-export type TransactionsGrouped = Record<number, Record<number, Record<number, ChartData>>>
+/*export type TransactionsGrouped = Record<number, Record<number, Record<number, ChartData>>>
 
 export type WalletOverview = {
     incomes: Income[],
@@ -133,7 +133,7 @@ export type WalletOverview = {
         incomes: ChartData,
         expenses: ChartData
     }
-}
+}*/
 
 
 export type DayOverview = {
@@ -152,7 +152,7 @@ export type YearOverview = {
     months: Record<string, MonthOverview>;
     [key: number]: MonthOverview
 };
-export type TransactionsGroupedTest = Record<string, YearOverview>;
+export type TransactionsGrouped = Record<string, YearOverview>;
 
 export type StackBarDataSet = {
     label: string; //category name
@@ -169,4 +169,10 @@ export type StackBarData = {
 export enum StackBarVariant {
     INCOME = "Incomes",
     EXPENSE = "Expenses"
+}
+
+export enum VisualisationPeriod {
+    DAY = "Today",
+    MONTH = "This month",
+    YEAR = "This year"
 }

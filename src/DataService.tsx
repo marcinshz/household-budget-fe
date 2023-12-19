@@ -6,7 +6,7 @@ import {
     CreateWalletDto,
     Expense,
     Income,
-    TransactionsGroupedTest,
+    TransactionsGrouped,
     UserAuthenticatedDto,
     UserCredentialsDto,
     Wallet,
@@ -94,9 +94,9 @@ export const getExpensesFromPeriod = async (days: number, walletId: string): Pro
 //OVERVIEW CALLS (INCOME, EXPENSE)
 export const getOverview = async (userId: string, wallets: WalletListItem[]): Promise<{
     incomes: Income[],
-    incomesGrouped: TransactionsGroupedTest,
+    incomesGrouped: TransactionsGrouped,
     expenses: Expense[],
-    expensesGrouped: TransactionsGroupedTest,
+    expensesGrouped: TransactionsGrouped,
     pies: {
         incomes: ChartData,
         expenses: ChartData
