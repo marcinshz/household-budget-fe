@@ -33,15 +33,3 @@
         align-items: start;
     }
 }
-
-.add-category {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    justify-content: center;
-    &__category-name-container {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-}

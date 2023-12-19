@@ -1,9 +1,9 @@
 import './pieChart.scss'
-import {TransactionsGrouped} from "../../../../types.ts";
+import {ChartData} from "../../../../types.ts";
 import {Chart} from "primereact/chart";
 
 type PieChartProps = {
-    data: TransactionsGrouped;
+    data: ChartData;
 }
 
 function PieChart({data}: PieChartProps) {

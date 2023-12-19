@@ -1,4 +1,5 @@
 //DTOS
+
 export class UserCredentialsDto {
     username: string;
     password: string;
@@ -108,7 +109,56 @@ export enum TransactionType {
     EXPENSE = "expense"
 }
 
-export type TransactionsGrouped = {
+export type ChartData = {
     labels: string[];
     datasets: { data: number[] }[];
+}
+
+export type TransactionsGrouped = Record<number, Record<number, Record<number, ChartData>>>
+
+export type WalletOverview = {
+    incomes: Income[],
+    incomesGrouped: TransactionsGrouped,
+    expenses: Expense[],
+    expensesGrouped: TransactionsGrouped,
+    pies: {
+        incomes: ChartData,
+        expenses: ChartData
+    }
+}
+
+
+export type DayOverview = {
+    overview: ChartData
+    list: Income[] | Expense[];
+};
+
+export type MonthOverview = {
+    overview: ChartData
+    days: Record<string, DayOverview>;
+    [key: number]: DayOverview
+};
+
+export type YearOverview = {
+    overview: ChartData;
+    months: Record<string, MonthOverview>;
+    [key: number]: MonthOverview
+};
+export type TransactionsGroupedTest = Record<string, YearOverview>;
+
+export type StackBarDataSet = {
+    label: string; //category name
+    data: number[]; //Wartości dla danej labelki każdego dnia
+    backgroundColor?: string; //raczej biore defaultowe
+    stack: string; //To oddziela slupki obok siebie, jedno to bd incomes a drugie expenses
+}
+
+export type StackBarData = {
+    labels: string[];//days/months/years
+    datasets: StackBarDataSet[]
+}
+
+export enum StackBarVariant {
+    INCOME = "Incomes",
+    EXPENSE = "Expenses"
 }

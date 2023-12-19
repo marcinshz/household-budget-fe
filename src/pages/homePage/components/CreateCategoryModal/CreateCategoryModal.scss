@@ -1,0 +1,54 @@
+.add-category {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+
+  &__category-name-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__icon-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: 16px;
+
+    &__header {
+
+    }
+
+    &__icons {
+      display: grid;
+      grid-gap: 24px;
+      grid-template-columns: repeat(5, 1fr);
+
+      &__item {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+
+        &:hover {
+          cursor: pointer;
+        }
+
+        svg {
+          background-color: #eaeaea;
+          border-radius: 8px;
+          padding: 16px;
+        }
+      }
+    }
+  }
+}
+
+input[type="radio"] {
+  height: 0;
+  width: 0;
+
+  &:checked + label {
+    background-color: #6366f1;
+  }
+}

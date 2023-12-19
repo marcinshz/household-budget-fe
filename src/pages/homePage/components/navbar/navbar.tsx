@@ -2,24 +2,17 @@ import {useEffect, useState} from 'react';
 import './navbar.scss';
 import {Sidebar} from 'primereact/sidebar';
 import {Button} from 'primereact/button';
-import {CreateCategoryDto, User} from '../../../../types';
+import {TransactionType, User} from '../../../../types';
 import {Dropdown} from 'primereact/dropdown';
 import {useNavigate} from 'react-router-dom';
-import {Dialog} from 'primereact/dialog';
-import {InputText} from 'primereact/inputtext';
-import {useDispatch} from "react-redux";
-import {createCategoryThunk} from "../../../../redux/thunks.ts";
-import {AppDispatch} from "../../../../redux/store.ts";
+import CreateCategoryModal from "../CreateCategoryModal/CreateCategoryModal.tsx";
 
 function Navbar(props: { user: User }) {
     const {user} = props;
     const [sidebar, setSidebar] = useState(false);
     const [currency, setCurrency] = useState("EUR");
     const [dialog, setDialog] = useState(false);
-    const [type, setType] = useState("")
-    const [name, setName] = useState("");
-    const [error, setError] = useState(false);
-    const dispatch = useDispatch<AppDispatch>()
+    const [type, setType] = useState<TransactionType>(TransactionType.INCOME);
     const navigate = useNavigate();
     useEffect(() => {
         localStorage.setItem("currency", currency)
@@ -36,30 +29,11 @@ function Navbar(props: { user: User }) {
         navigate('/login')
     }
 
-    const handleOpenDialog = (type: string) => {
+    const handleOpenDialog = (type: TransactionType) => {
         setType(type);
         setDialog(true);
     }
 
-    const handleCreateCategory = async () => {
-        //TODO VALIDATION
-        /*/!*        if (!name) setError(true);
-                else {
-                    await createCategory(new CreateCategoryDto(name, user.id, type)).then(() => {
-                        setDialog(false);
-                        setName("");
-                    })*!/
-                }*/
-        const category = new CreateCategoryDto(name, user.id, type);
-        await dispatch(createCategoryThunk(category)).then(() => {
-            setDialog(false);
-        });
-    }
-
-    const handleChange = (name: string) => {
-        setError(false);
-        setName(name);
-    }
 
     return (
         <div className="navbar">
@@ -95,23 +69,14 @@ function Navbar(props: { user: User }) {
 
                 <div className="sidebar__buttons">
                     <Button label='Create Expense Categories' link size="large"
-                            onClick={() => handleOpenDialog("expense")}/>
+                            onClick={() => handleOpenDialog(TransactionType.EXPENSE)}/>
                     <Button label='Create Income Categories' link size="large"
-                            onClick={() => handleOpenDialog("income")}/>
+                            onClick={() => handleOpenDialog(TransactionType.INCOME)}/>
                     <Button label='Financial Tips' link size="large"/>
                     <Button label='Sign out' link size="large" onClick={() => handleSignOut()}/>
                 </div>
-                <Dialog header={`Add new ${type} category`} visible={dialog} style={{width: '90vw', maxWidth: '960px'}}
-                        position='top' onHide={() => setDialog(false)}>
-                    <div className="add-category">
-                        <div className="add-category__category-name-container">
-                            <label htmlFor="category-name">Category name</label>
-                            <InputText id="category-name" onChange={(e) => handleChange(e.target.value)}
-                                       className={`${error ? 'p-invalid' : ''}`}/>
-                        </div>
-                        <Button onClick={handleCreateCategory} style={{justifyContent: 'center'}}>Add category</Button>
-                    </div>
-                </Dialog>
+
+                <CreateCategoryModal type={type} visible={dialog} setVisible={setDialog}/>
             </Sidebar>
         </div>
     )

@@ -1,11 +1,12 @@
 import {
     Category,
+    ChartData,
     CreateCategoryDto,
     CreateTransactionDto,
     CreateWalletDto,
     Expense,
     Income,
-    TransactionsGrouped,
+    TransactionsGroupedTest,
     UserAuthenticatedDto,
     UserCredentialsDto,
     Wallet,
@@ -91,20 +92,22 @@ export const getExpensesFromPeriod = async (days: number, walletId: string): Pro
 }
 
 //OVERVIEW CALLS (INCOME, EXPENSE)
-export const getOverview = async (userId: string, wallets: WalletListItem[], period: string): Promise<{
+export const getOverview = async (userId: string, wallets: WalletListItem[]): Promise<{
     incomes: Income[],
+    incomesGrouped: TransactionsGroupedTest,
     expenses: Expense[],
+    expensesGrouped: TransactionsGroupedTest,
     pies: {
-        incomes: TransactionsGrouped,
-        expenses: TransactionsGrouped
+        incomes: ChartData,
+        expenses: ChartData
     }
 }> => {
-    return await fetch(api_url + 'wallet/user-wallets-overview', {
+    return await fetch(api_url + 'wallet/user-wallets-overview-test', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({userId, wallets, period})
+        body: JSON.stringify({userId, wallets})
     }).then(res => res.json()).then(data => {
         console.log(data)
         return data;
