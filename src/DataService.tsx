@@ -109,7 +109,6 @@ export const getOverview = async (userId: string, wallets: WalletListItem[]): Pr
         },
         body: JSON.stringify({userId, wallets})
     }).then(res => res.json()).then(data => {
-        console.log(data)
         return data;
     })
 }

@@ -1,0 +1,55 @@
+.transaction-visualisations {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+
+
+  &__header {
+    border-top: 2px solid #6366f1;
+    display: flex;
+    font-weight: 700;
+    justify-content: space-between;
+    padding-top: 16px;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+
+    @media screen and (max-width: 768px) {
+      align-items: center;
+      flex-direction: column;
+      gap: 36px;
+    }
+  }
+
+
+  &__pie-chart {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 50%;
+  }
+
+  &__total-value {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    justify-content: center;
+    width: 50%;
+
+    &__text {
+      font-weight: 700;
+      font-size: 20px;
+
+      &--positive {
+        color: green;
+      }
+
+      &--negative {
+        color: red;
+      }
+    }
+  }
+}

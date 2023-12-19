@@ -111,7 +111,15 @@ export enum TransactionType {
 
 export type ChartData = {
     labels: string[];
-    datasets: { data: number[] }[];
+    values: number[];
+}
+
+export type PieChartData = {
+    labels: string[];
+    datasets: {
+        data: number[],
+        label: string;
+    }[]
 }
 
 export type TransactionsGrouped = Record<number, Record<number, Record<number, ChartData>>>
