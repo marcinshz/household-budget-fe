@@ -1,27 +1,27 @@
-.transactions-section {
-  border-top: 2px solid #6366f1;
+.transactions {
+  /*  border-top: 2px solid #6366f1;*/
   display: flex;
   flex-direction: column;
   gap: 48px;
   padding-top: 8px;
 }
-.transactions-section__header {
+.transactions__header {
   font-weight: 700;
 }
-.transactions-section__row {
+.transactions__row {
   display: grid;
   grid-gap: 32px;
   grid-template-columns: 1fr 1fr;
 }
 @media screen and (max-width: 768px) {
-  .transactions-section__row {
+  .transactions__row {
     grid-template-columns: 100%;
   }
 }
-.transactions-section__column {
+.transactions__column {
   display: flex;
   flex-direction: column;
   gap: 48px;
 }
 
-/*# sourceMappingURL=TransactionsSection.css.map */
+/*# sourceMappingURL=Transactions.css.map */

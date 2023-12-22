@@ -1,0 +1,11 @@
+.transfer-funds {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+
+  &__wallet-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+}

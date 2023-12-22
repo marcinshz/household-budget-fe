@@ -1,4 +1,4 @@
-import {PieChartData, StackBarData, TransactionsGrouped} from "../../../../types.ts";
+import {PieChartData, StackBarData, TransactionsGrouped} from "../types.ts";
 
 export function getChartsDataForYear(transactionsGrouped: TransactionsGrouped, year: number) {
     let categoryLabels: string[] = [];

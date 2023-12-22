@@ -1,0 +1,17 @@
+.remove-wallet {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+
+  &__wallet-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__caution {
+    color: red;
+    font-size: 18px;
+    text-align: center;
+  }
+}

@@ -9,16 +9,27 @@ import {Provider} from 'react-redux';
 import store from './redux/store.ts';
 import ErrorPage from './pages/errorPage/errorPage.tsx';
 import {AuthHandler} from "./auth.ts";
+import TransactionsPage from "./pages/transactionsPage/transactionsPage.tsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <HomePage/>,
         loader: async () => {
+            console.log('aaa')
             return await AuthHandler(redirect, store.dispatch);
         },
         errorElement: <ErrorPage/>
     },
+    {
+        path: "/transactions",
+        element: <TransactionsPage/>,
+        loader: async () => {
+            return await AuthHandler(redirect, store.dispatch);
+        },
+        errorElement: <ErrorPage/>
+    },
+
     {
         path: '/login',
         element: <LoginPage/>

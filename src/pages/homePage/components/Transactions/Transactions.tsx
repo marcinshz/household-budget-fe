@@ -1,20 +1,20 @@
 import {Expense, Income, TransactionType} from "../../../../types.ts";
 import TransactionList from "../TransactionList/TransactionList.tsx";
-import './TransactionsSection.scss';
+import './Transactions.scss';
 
-type TransactionsSectionProps = {
+type TransactionsProps = {
     incomes: Income[] | Expense[];
     expenses: Income[] | Expense[];
 }
 
-function TransactionsSection({incomes, expenses}: TransactionsSectionProps) {
+function Transactions({incomes, expenses}: TransactionsProps) {
     return (
-        <div className="transactions-section">
-            <div className="transactions-section__row">
-                <div className="transactions-section__column">
+        <div className="transactions">
+            <div className="transactions__row">
+                <div className="transactions__column">
                     <TransactionList transactions={incomes} type={TransactionType.INCOME}/>
                 </div>
-                <div className="transactions-section__column">
+                <div className="transactions__column">
                     <TransactionList transactions={expenses} type={TransactionType.EXPENSE}/>
                 </div>
             </div>
@@ -22,4 +22,4 @@ function TransactionsSection({incomes, expenses}: TransactionsSectionProps) {
     );
 }
 
-export default TransactionsSection;
+export default Transactions;

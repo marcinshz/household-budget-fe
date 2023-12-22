@@ -1,8 +1,9 @@
 import {
     Category,
-    ChartData,
     CreateCategoryDto,
+    CreateLimitDto,
     CreateTransactionDto,
+    CreateTransferDto,
     CreateWalletDto,
     Expense,
     Income,
@@ -42,9 +43,12 @@ export const signIn = async (credentials: UserCredentialsDto): Promise<UserAuthe
     })
 }
 
-export const authenticate = async (userId: string, accessToken: string): Promise<Response> => {
-    // send request to backend to check token
-    return true;
+export const authenticate = async (accessToken: string): Promise<Response> => {
+    return await fetch(api_url + "auth/verify-token/" + accessToken).then(res => {
+        return res.json();
+    }).then(data => {
+        return data;
+    })
 }
 
 //WALLET CALLS
@@ -58,10 +62,20 @@ export const createWallet = async (walletData: CreateWalletDto): Promise<Wallet>
     }).then(res => res.json()).then(data => {
         return data;
     })
+
 }
 export const getWallets = async (userId: string): Promise<Wallet[]> => {
     return await fetch(api_url + "wallet/user-wallets/" + userId).then(res => res.json()).then(data => {
+        console.log(data);
         return data;
+    })
+}
+
+export const removeWallet = async (walletId: string): Promise<string> => {
+    return await fetch(api_url + "wallet/" + walletId, {
+        method: 'DELETE'
+    }).then(() => {
+        return walletId
     })
 }
 
@@ -78,7 +92,10 @@ export const createCategory = async (createCategoryDto: CreateCategoryDto): Prom
     })
 }
 
-export const getCategories = async (userId: string): Promise<{ incomes: Category[], expenses: Category[] }> => {
+export const getCategories = async (userId: string): Promise<{
+    incomes: Category[],
+    expenses: Category[]
+}> => {
     return await fetch(api_url + "category/" + userId).then((res) => res.json()).then((data) => {
         return data;
     })
@@ -97,10 +114,6 @@ export const getOverview = async (userId: string, wallets: WalletListItem[]): Pr
     incomesGrouped: TransactionsGrouped,
     expenses: Expense[],
     expensesGrouped: TransactionsGrouped,
-    pies: {
-        incomes: ChartData,
-        expenses: ChartData
-    }
 }> => {
     return await fetch(api_url + 'wallet/user-wallets-overview-test', {
         method: 'POST',
@@ -121,6 +134,37 @@ export const createTransaction = async (createTransactionDto: CreateTransactionD
         },
         body: JSON.stringify(createTransactionDto)
     }).then(res => res.json()).then(data => {
+        return data;
+    })
+}
+
+
+export const createTransfer = async (createTransferDto: CreateTransferDto) => {
+    return await fetch(api_url + 'transaction', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(createTransferDto)
+    }).then(res => res.json()).then(data => {
+        return data;
+    })
+}
+
+export const createLimit = async (createLimitDto: CreateLimitDto) => {
+    return await fetch(api_url + 'limit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(createLimitDto)
+    }).then(res => res.json()).then(data => {
+        return data;
+    })
+}
+
+export const getLimits = async (userId: string) => {
+    return await fetch(api_url + 'limit/' + userId).then(res => res.json()).then(data => {
         return data;
     })
 }

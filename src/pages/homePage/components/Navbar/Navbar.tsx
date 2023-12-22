@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import './navbar.scss';
+import './Navbar.scss';
 import {Sidebar} from 'primereact/sidebar';
 import {Button} from 'primereact/button';
 import {TransactionType, User} from '../../../../types';

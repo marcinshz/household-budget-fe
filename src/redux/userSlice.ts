@@ -6,7 +6,8 @@ export const userSlice = createSlice({
     initialState: {
         id: "",
         username: "",
-        access_token: ""
+        access_token: "",
+        currency: ""
     },
     reducers: {
         setUser: (state, action) => {
@@ -17,7 +18,8 @@ export const userSlice = createSlice({
     extraReducers: builder => {
         builder.addCase(signInThunk.fulfilled, (state, action) => {
             const {user, access_token} = action.payload;
-            state = {id: user.id, username: user.username, access_token}
+            console.log(user)
+            state = {id: user.id, username: user.username, access_token, currency: user.currency}
             return state;
         })
         builder.addCase(createAccountThunk.fulfilled, (state, action) => {

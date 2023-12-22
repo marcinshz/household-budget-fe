@@ -10,6 +10,20 @@
     font-weight: 700;
     justify-content: space-between;
     padding-top: 16px;
+
+    @media screen and (max-width: 768px) {
+      flex-direction: column;
+      gap: 24px;
+
+      &__buttons {
+        justify-content: space-between;
+      }
+    }
+
+    &__buttons {
+      display: flex;
+      gap: 36px;
+    }
   }
 
   &__row {
@@ -40,8 +54,8 @@
     width: 50%;
 
     &__text {
-      font-weight: 700;
       font-size: 20px;
+      font-weight: 700;
 
       &--positive {
         color: green;

@@ -1,38 +1,59 @@
 import {Button} from 'primereact/button';
 import './walletList.scss';
-import {Dialog} from 'primereact/dialog';
 import {useState} from 'react';
-import {InputText} from 'primereact/inputtext';
-import {useDispatch, useSelector} from 'react-redux';
-import {createWalletThunk} from '../../../../redux/thunks';
-import {CreateWalletDto} from '../../../../types';
-import {AppDispatch, RootState} from '../../../../redux/store';
 import CheckboxCard from "./components/CheckboxCard/CheckboxCard.tsx";
-
+import CreateWalletModal from "../CreateWalletModal/CreateWalletModal.tsx";
+import {WalletListItem, WalletModalVariants} from "../../../../types.ts";
+import CreateTransferModal from "../CreateTransferModal/CreateTransferModal.tsx";
+import RemoveWalletModal from "../RemoveWalletModal/RemoveWalletModal.tsx";
 
 interface OverviewProps {
-    walletList: { id: string, name: string, balance: number, checked: boolean }[];
+    walletList: WalletListItem[];
     handleWalletChange: Function;
 }
 
 function WalletList({walletList, handleWalletChange}: OverviewProps) {
-    const userId = useSelector((state: RootState) => state.user.id)
     const [dialog, setDialog] = useState(false);
-    const [name, setName] = useState("");
-    const dispatch = useDispatch<AppDispatch>();
+    const [dialogVariant, setDialogVariant] = useState<WalletModalVariants>();
     let currency = "EUR";//pobrac z localstorage
+
+    const handleWalletAction = (variant: WalletModalVariants) => {
+        setDialogVariant(variant);
+        setDialog(true);
+    }
 
     return (
         <div className="wallet-list">
             <div className="wallet-list__header">
-                <h2>Overview</h2>
-                <Button size="small" onClick={() => setDialog(true)}>Add wallet</Button>
+                <h2>Your wallets</h2>
+                <div className="wallet-list__header__buttons">
+                    <Button
+                        size="small"
+                        onClick={() => handleWalletAction(WalletModalVariants.CREATE)}
+                    >
+                        Add wallet
+                    </Button>
+                    <Button
+                        size="small"
+                        severity="secondary"
+                        onClick={() => handleWalletAction(WalletModalVariants.TRANSFER)}
+                    >
+                        Transfer funds
+                    </Button>
+                    <Button
+                        size="small"
+                        severity="help"
+                        onClick={() => handleWalletAction(WalletModalVariants.REMOVE)}
+                    >
+                        Remove wallet
+                    </Button>
+                </div>
             </div>
             {walletList.length ? <div className="wallet-list__cards">
                     {walletList.map((wallet, index) => (
                         <CheckboxCard
                             title={wallet.name}
-                            subTitle={wallet.balance + currency}
+                            subTitle={wallet.balanceStamps[0] ? wallet.balanceStamps[0].balance + currency : 0 + currency}
                             checked={wallet.checked}
                             onChange={(_e) => handleWalletChange(index)} key={wallet.id}
                         />
@@ -44,18 +65,12 @@ function WalletList({walletList, handleWalletChange}: OverviewProps) {
                     <p>Add your first wallet!</p>
                 </div>
             }
-            <Dialog header="Add new wallet" visible={dialog} style={{width: '90vw', maxWidth: '600px'}}
-                    onHide={() => setDialog(false)}>
-                <div className="add-wallet">
-                    <div className="add-wallet__wallet-name-container">
-                        <label htmlFor="wallet-name">Wallet name</label>
-                        <InputText id="wallet-name" onChange={(e) => setName(e.target.value)}/>
-                    </div>
-                    <Button onClick={async () => {
-                        await dispatch(createWalletThunk(new CreateWalletDto(name, userId))).then(() => setDialog(false))
-                    }} style={{justifyContent: 'center'}}>Add wallet</Button>
-                </div>
-            </Dialog>
+            {dialogVariant === WalletModalVariants.CREATE &&
+                <CreateWalletModal visible={dialog} setVisible={setDialog}/>}
+            {dialogVariant === WalletModalVariants.TRANSFER &&
+                <CreateTransferModal visible={dialog} setVisible={setDialog}/>}
+            {dialogVariant === WalletModalVariants.REMOVE &&
+                <RemoveWalletModal visible={dialog} setVisible={setDialog}/>}
         </div>
     )
 }

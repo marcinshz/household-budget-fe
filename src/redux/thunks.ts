@@ -1,6 +1,31 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {Category, CreateCategoryDto, CreateWalletDto, UserAuthenticatedDto, UserCredentialsDto, Wallet} from "../types";
-import {createAccount, createCategory, createWallet, getCategories, getWallets, signIn} from "../DataService";
+import {
+    Category,
+    CreateCategoryDto,
+    CreateLimitDto,
+    CreateTransferDto,
+    CreateWalletDto,
+    Expense,
+    Income,
+    TransactionsGrouped,
+    UserAuthenticatedDto,
+    UserCredentialsDto,
+    Wallet,
+    WalletListItem
+} from "../types";
+import {
+    createAccount,
+    createCategory,
+    createLimit,
+    createTransfer,
+    createWallet,
+    getCategories,
+    getLimits,
+    getOverview,
+    getWallets,
+    removeWallet,
+    signIn
+} from "../DataService";
 
 
 //USER THUNKS
@@ -33,6 +58,13 @@ export const getWalletsThunk = createAsyncThunk(
     }
 )
 
+export const removeWalletThunk = createAsyncThunk(
+    'wallets/removeWallet',
+    async (walletId: string): Promise<string> => {
+        return await removeWallet(walletId);
+    }
+)
+
 //CATEGORY THUNKS
 export const createCategoryThunk = createAsyncThunk(
     'categories/createCategory',
@@ -43,7 +75,48 @@ export const createCategoryThunk = createAsyncThunk(
 
 export const getCategoriesThunk = createAsyncThunk(
     'categories/getCategories',
-    async (userId: string): Promise<{ incomes: Category[], expenses: Category[] }> => {
+    async (userId: string): Promise<{
+        incomes: Category[],
+        expenses: Category[]
+    }> => {
         return await getCategories(userId);
+    }
+)
+
+//TRANSACTION THUNKS
+export const getTransactionsThunk = createAsyncThunk(
+    'transactions/getTransactions',
+    async (userData: {
+        id: string,
+        wallets: WalletListItem[]
+    }): Promise<{
+        incomes: Income[],
+        incomesGrouped: TransactionsGrouped,
+        expenses: Expense[],
+        expensesGrouped: TransactionsGrouped,
+    }> => {
+        return await getOverview(userData.id, userData.wallets);
+    }
+)
+
+export const createTransferThunk = createAsyncThunk(
+    'wallets/createTransfer',
+    async (transferData: CreateTransferDto) => {
+        return await createTransfer(transferData);
+    }
+)
+
+//LIMIT THUNKS
+export const createLimitThunk = createAsyncThunk(
+    'limit/createLimit',
+    async (limitData: CreateLimitDto) => {
+        return await createLimit(limitData);
+    }
+)
+
+export const getLimitsThunk = createAsyncThunk(
+    'limit/getLimits',
+    async (userId: string) => {
+        return await getLimits(userId);
     }
 )

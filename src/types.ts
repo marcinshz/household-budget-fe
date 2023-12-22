@@ -16,7 +16,8 @@ export interface UserAuthenticatedDto {
         password: string,
         id: string
     }
-    access_token: string
+    access_token: string,
+    currency: string;
 }
 
 export class CreateWalletDto {
@@ -24,10 +25,10 @@ export class CreateWalletDto {
     name: string;
     balance: number;
 
-    constructor(name: string, userId: string) {
+    constructor(name: string, userId: string, balance: number) {
         this.userId = userId;
         this.name = name;
-        this.balance = 0;
+        this.balance = balance;
     }
 }
 
@@ -67,10 +68,17 @@ export interface User {
     username: string;
 }
 
+export interface BalanceStamp {
+    id: string;
+    balance: number;
+    createdAt: Date;
+}
+
 export interface Wallet {
     id: string;
     name: string;
     balance: number;
+    balanceStamps: BalanceStamp[]
 }
 
 export interface WalletListItem {
@@ -78,6 +86,7 @@ export interface WalletListItem {
     name: string;
     balance: number;
     checked: boolean;
+    balanceStamps: BalanceStamp[]
 }
 
 export interface Category {
@@ -175,4 +184,65 @@ export enum VisualisationPeriod {
     DAY = "Today",
     MONTH = "This month",
     YEAR = "This year"
+}
+
+export type SelectNode = {
+    label: string,
+    id: string,
+    key: string,
+    data: string,
+    children: SelectNode[]
+}
+
+export enum WalletModalVariants {
+    CREATE = "create",
+    TRANSFER = "transfer",
+    REMOVE = "remove"
+}
+
+export type ModalProps = {
+    visible: boolean;
+    setVisible: Function;
+}
+
+export class CreateTransferDto {
+    senderWalletId: string;
+    receiverWalletId: string;
+    senderCategoryId: string;
+    receiverCategoryId: string;
+    value: number;
+    note?: string;
+
+    constructor(senderWalletId: string, receiverWalletId: string, senderCategoryId: string, ReceiverCategoryId: string, value: number) {
+        this.senderWalletId = senderWalletId;
+        this.receiverWalletId = receiverWalletId;
+        this.senderCategoryId = senderCategoryId;
+        this.receiverCategoryId = ReceiverCategoryId;
+        this.value = value;
+    }
+}
+
+export type Limit = {
+    id: string;
+    category: Category;
+    value: number;
+    currentValue: number;
+    start: Date;
+    deadline: Date;
+}
+
+export class CreateLimitDto {
+    categoryId: string;
+    start: Date;
+    deadline: Date;
+    userId: string;
+    value: number;
+
+    constructor(start: Date, deadline: Date, userId: string, value: number, categoryId: string) {
+        this.start = start;
+        this.deadline = deadline;
+        this.value = value;
+        this.userId = userId;
+        this.categoryId = categoryId;
+    }
 }

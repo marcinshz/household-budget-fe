@@ -1,13 +1,12 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {WalletListItem} from "../types";
-import {createWalletThunk, getWalletsThunk} from "./thunks";
+import {createTransferThunk, createWalletThunk, getWalletsThunk, removeWalletThunk} from "./thunks";
 
 export const walletSlice = createSlice({
     name: 'wallets',
     initialState: new Array<WalletListItem>(),
     reducers: {
         toggleWallet: (state, action) => {
-            console.log(state, action)
             state = action.payload;
             return state;
         }
@@ -24,8 +23,19 @@ export const walletSlice = createSlice({
                     checked: true
                 }
             });
+            console.log(state)
             return state
         })
+        builder.addCase(createTransferThunk.fulfilled, (state) => {
+            return state;
+        })
+        builder.addCase(removeWalletThunk.fulfilled, (state, action) => {
+            state = state.filter((wallet) => {
+                return wallet.id !== action.payload
+            })
+            return state
+        })
+
     }
 })
 

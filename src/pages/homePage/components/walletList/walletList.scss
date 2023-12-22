@@ -8,6 +8,11 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+
+    &__buttons {
+      display: flex;
+      gap: 16px;
+    }
   }
 
   &__cards {
@@ -25,17 +30,5 @@
     &--empty {
       text-align: center;
     }
-  }
-}
-
-.add-wallet {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-
-  &__wallet-name-container {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
   }
 }
