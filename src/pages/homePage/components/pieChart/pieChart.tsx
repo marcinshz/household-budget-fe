@@ -7,8 +7,6 @@ type PieChartProps = {
 }
 
 function PieChart({data}: PieChartProps) {
-
-    //console.log(data);
     return (
         <div className="pie-chart">
             {data.labels.length ?

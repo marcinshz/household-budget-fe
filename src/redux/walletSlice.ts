@@ -23,7 +23,6 @@ export const walletSlice = createSlice({
                     checked: true
                 }
             });
-            console.log(state)
             return state
         })
         builder.addCase(createTransferThunk.fulfilled, (state) => {

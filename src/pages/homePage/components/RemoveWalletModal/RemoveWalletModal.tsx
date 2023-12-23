@@ -18,7 +18,6 @@ function RemoveWalletModal({visible, setVisible}: ModalProps) {
     const handleSubmit = () => {
         if (walletId) {
             setError(false);
-            console.log(walletId)
             dispatch(removeWalletThunk(walletId));
             setVisible(false);
         } else {

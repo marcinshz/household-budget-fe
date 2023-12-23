@@ -6,26 +6,41 @@ import CreateWalletModal from "../CreateWalletModal/CreateWalletModal.tsx";
 import {WalletListItem, WalletModalVariants} from "../../../../types.ts";
 import CreateTransferModal from "../CreateTransferModal/CreateTransferModal.tsx";
 import RemoveWalletModal from "../RemoveWalletModal/RemoveWalletModal.tsx";
+import {cloneDeep} from "lodash";
+import {toggleWallet} from "../../../../redux/walletSlice.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../../../redux/store.ts";
 
-interface OverviewProps {
-    walletList: WalletListItem[];
-    handleWalletChange: Function;
-}
-
-function WalletList({walletList, handleWalletChange}: OverviewProps) {
+function WalletList() {
     const [dialog, setDialog] = useState(false);
     const [dialogVariant, setDialogVariant] = useState<WalletModalVariants>();
     let currency = "EUR";//pobrac z localstorage
-
+    const {wallets} = useSelector((state: RootState) => {
+        return {wallets: state.wallets};
+    })
+    const dispatch = useDispatch<AppDispatch>();
     const handleWalletAction = (variant: WalletModalVariants) => {
         setDialogVariant(variant);
         setDialog(true);
     }
 
+    function handleWalletChange(index: number) {
+        let list = cloneDeep(wallets);
+        list[index].checked = !list[index].checked;
+        dispatch(toggleWallet(list));
+    }
+
+    function getLatestBalance(wallet: WalletListItem) {
+        const copy = cloneDeep(wallet);
+        const tmp = copy.balanceStamps.pop();
+        if (tmp) return tmp.balance;
+        return 0;
+    }
+
     return (
         <div className="wallet-list">
             <div className="wallet-list__header">
-                <h2>Your wallets</h2>
+                <h2>Wallets</h2>
                 <div className="wallet-list__header__buttons">
                     <Button
                         size="small"
@@ -49,11 +64,11 @@ function WalletList({walletList, handleWalletChange}: OverviewProps) {
                     </Button>
                 </div>
             </div>
-            {walletList.length ? <div className="wallet-list__cards">
-                    {walletList.map((wallet, index) => (
+            {wallets.length ? <div className="wallet-list__cards">
+                    {wallets.map((wallet, index) => (
                         <CheckboxCard
                             title={wallet.name}
-                            subTitle={wallet.balanceStamps[0] ? wallet.balanceStamps[0].balance + currency : 0 + currency}
+                            subTitle={getLatestBalance(wallet) + currency}
                             checked={wallet.checked}
                             onChange={(_e) => handleWalletChange(index)} key={wallet.id}
                         />

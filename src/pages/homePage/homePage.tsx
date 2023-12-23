@@ -8,10 +8,9 @@ import WalletList from "./components/walletList/walletList.tsx";
 import Navbar from "./components/Navbar/Navbar.tsx";
 import Transactions from "./components/Transactions/Transactions.tsx";
 import TransactionVisualisations from "./components/TransactionVisualisations/TransactionVisualisations.tsx";
-import {toggleWallet} from "../../redux/walletSlice.ts";
-import {cloneDeep} from 'lodash';
 import {getTransactionsThunk} from "../../redux/thunks.ts";
 import ExpenseLimits from "./components/ExpenseLimits/ExpenseLimits.tsx";
+import BalanceHistory from "./components/BalanceHistory/BalanceHistory.tsx";
 
 function HomePage() {
     const {user, wallets, transactions} = useSelector((state: RootState) => {
@@ -28,33 +27,26 @@ function HomePage() {
     }, [wallets]);
 
 
-    function handleWalletChange(index: number) {
-        let list = cloneDeep(wallets);
-        list[index].checked = !list[index].checked;
-        dispatch(toggleWallet(list));
-    }
-
     return (
         <div className="home-page">
             <Navbar user={user}/>
             <div className="home-page__content">
-                <WalletList walletList={wallets} handleWalletChange={handleWalletChange}/>
                 <ExpenseLimits/>
-                <Transactions
-                    incomes={transactions.incomes}
-                    expenses={transactions.expenses}
-                />
+                <WalletList/>
                 <div className={"home-page__content__this-month"}>
+                    {wallets && wallets.length &&
+                        <BalanceHistory homePage={true}/>
+                    }
                     {transactions.incomesGrouped && transactions.expensesGrouped &&
                         <TransactionVisualisations
                             transactionsGrouped={{
                                 incomes: transactions.incomesGrouped,
                                 expenses: transactions.expensesGrouped
                             }}
-                            current={true}
                             homePage={true}
                         />}
                 </div>
+                <Transactions/>
             </div>
         </div>
     )

@@ -47,20 +47,13 @@ function CreateTransferModal({visible, setVisible}: ModalProps) {
     }, [sourceWalletId, targetWalletId]);
 
     const handleSubmit = async () => {
-        console.log('sybnit')
         let sourceCategory = categories.expenses.find((category) => {
             return category.name === "Internal Transfer"
         })
         let targetCategory = categories.incomes.find((category) => {
             return category.name === "Internal Transfer"
         })
-        console.log('categories')
-        console.log(sourceCategory, targetCategory)
-        console.log('wallets')
-        console.log(sourceWalletId, targetWalletId)
-        console.log('value', value)
         if (sourceWalletId && targetWalletId && sourceCategory && targetCategory && value) {
-            console.log('dispatched')
             await dispatch(createTransferThunk(new CreateTransferDto(sourceWalletId, targetWalletId, sourceCategory.id, targetCategory.id, value))).then(() => {
                 dispatch(getWalletsThunk(user.id));
                 setVisible(false);

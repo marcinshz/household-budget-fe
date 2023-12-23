@@ -1,0 +1,21 @@
+.balance-history {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+
+
+  &__header {
+    align-items: center;
+    border-top: 2px solid #6366f1;
+    display: flex;
+    font-weight: 700;
+    justify-content: space-between;
+    padding-top: 16px;
+    
+
+    &__buttons {
+      display: flex;
+      gap: 36px;
+    }
+  }
+}

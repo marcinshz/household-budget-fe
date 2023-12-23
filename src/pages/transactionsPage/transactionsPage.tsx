@@ -2,8 +2,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../../redux/store.ts";
 import Navbar from "../homePage/components/Navbar/Navbar.tsx";
 import WalletList from "../homePage/components/walletList/walletList.tsx";
-import {cloneDeep} from "lodash";
-import {toggleWallet} from "../../redux/walletSlice.ts";
 import './transactionsPage.scss';
 import {useEffect} from "react";
 import {getTransactionsThunk} from "../../redux/thunks.ts";
@@ -23,17 +21,11 @@ function TransactionsPage() {
             }));
     }, [wallets]);
 
-    function handleWalletChange(index: number) {
-        let list = cloneDeep(wallets);
-        list[index].checked = !list[index].checked;
-        dispatch(toggleWallet(list));
-    }
-
     return (
         <div className="transactions-page">
             <Navbar user={user}/>
             <div className="transactions-page__content">
-                <WalletList walletList={wallets} handleWalletChange={handleWalletChange}/>
+                <WalletList/>
                 <div className="transactions-page__content__visualisations">
                     {transactions.incomesGrouped && transactions.expensesGrouped &&
                         <TransactionVisualisations
@@ -41,7 +33,6 @@ function TransactionsPage() {
                                 incomes: transactions.incomesGrouped,
                                 expenses: transactions.expensesGrouped
                             }}
-                            current={true}
                         />}
                 </div>
             </div>

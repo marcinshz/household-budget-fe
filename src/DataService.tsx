@@ -66,7 +66,6 @@ export const createWallet = async (walletData: CreateWalletDto): Promise<Wallet>
 }
 export const getWallets = async (userId: string): Promise<Wallet[]> => {
     return await fetch(api_url + "wallet/user-wallets/" + userId).then(res => res.json()).then(data => {
-        console.log(data);
         return data;
     })
 }

@@ -28,17 +28,17 @@ function LoginPage() {
                 return value.payload;
             });
         }
-        console.log(user_authenticated)
         if (user_authenticated.access_token) {
             localStorage.setItem("access_token", user_authenticated.access_token);
             localStorage.setItem("id", user_authenticated.user.id);
             localStorage.setItem("username", user_authenticated.user.username);
             localStorage.setItem("CURRENCY", "EUR");
             navigate('/');
-        }
+        } else setError(true);
     }
 
     const handleChange = (text: string, type: boolean) => {
+        setError(false);
         if (type) setUsername(text);
         else setPassword(text);
     }

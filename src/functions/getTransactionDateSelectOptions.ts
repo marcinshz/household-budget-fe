@@ -1,7 +1,7 @@
 import {SelectNode, StackBarVariant, TransactionsGrouped} from "../types.ts";
 import * as _ from "lodash";
 
-export function getDateSelectOptions(transactionVariant: StackBarVariant, transactionsGrouped: {
+export function getTransactionDateSelectOptions(transactionVariant: StackBarVariant, transactionsGrouped: {
     incomes: TransactionsGrouped,
     expenses: TransactionsGrouped
 }) {

@@ -4,21 +4,24 @@ import {Chart} from "primereact/chart";
 import {SelectButton} from "primereact/selectbutton";
 import './TransactionVisualisations.scss';
 import {Button} from "primereact/button";
-import {getChartsDataForDay, getChartsDataForMonth, getChartsDataForYear} from "../../../../functions/getChartsData.ts";
+import {
+    getTransactionChartsDataForDay,
+    getTransactionChartsDataForMonth,
+    getTransactionChartsDataForYear
+} from "../../../../functions/getChartsData.ts";
 import {useNavigate} from "react-router-dom";
 import {TreeSelect, TreeSelectChangeEvent} from "primereact/treeselect";
-import {getDateSelectOptions} from "../../../../functions/getDateSelectOptions.ts";
+import {getTransactionDateSelectOptions} from "../../../../functions/getTransactionDateSelectOptions.ts";
 
 type TransactionVisualisationsProps = {
     transactionsGrouped: {
         incomes: TransactionsGrouped,
         expenses: TransactionsGrouped,
     },
-    current: boolean,
     homePage?: boolean
 }
 
-function TransactionVisualisations({transactionsGrouped, current, homePage}: TransactionVisualisationsProps) {
+function TransactionVisualisations({transactionsGrouped, homePage}: TransactionVisualisationsProps) {
     const [transactionVariant, setTransactionVariant] = useState<StackBarVariant>(StackBarVariant.INCOME)
     const [stackBarData, setStackBarData] = useState<{
         incomes: StackBarData,
@@ -62,7 +65,7 @@ function TransactionVisualisations({transactionsGrouped, current, homePage}: Tra
     const [selectNode, setSelectNode] = useState<string>("");
     const [showTreeSelect, setShowTreeSelect] = useState<boolean>(false);
     useEffect(() => {
-        createVisualisationsData(year, current, month, day);
+        createVisualisationsData(year, month, day);
     }, [transactionsGrouped, year, month, day]);
 
     useEffect(() => {
@@ -73,7 +76,7 @@ function TransactionVisualisations({transactionsGrouped, current, homePage}: Tra
         if (selectNodes.length > 0) setShowTreeSelect(true);
     }, [selectNodes]);
 
-    function createVisualisationsData(year: number, current: boolean, month?: number, day?: number) {
+    function createVisualisationsData(year: number, month?: number, day?: number) {
         const {incomes, expenses} = transactionsGrouped;
         let incomeTotalValue = 0;
         let expenseTotalValue = 0;
@@ -93,6 +96,7 @@ function TransactionVisualisations({transactionsGrouped, current, homePage}: Tra
             labels: [],
             datasets: []
         }
+        const currentMonth = year === new Date().getFullYear() && month === new Date().getMonth() + 1;
 
         if (incomes && incomes[year] && incomes[year].overview) {
             if (!month) {
@@ -101,7 +105,7 @@ function TransactionVisualisations({transactionsGrouped, current, homePage}: Tra
                     pieChartData,
                     stackBarData,
                     totalValue
-                } = getChartsDataForYear(transactionsGrouped.incomes, year);
+                } = getTransactionChartsDataForYear(transactionsGrouped.incomes, year);
                 incomesPieChartData = pieChartData;
                 incomesStackBarData = stackBarData;
                 incomeTotalValue = totalValue;
@@ -113,7 +117,7 @@ function TransactionVisualisations({transactionsGrouped, current, homePage}: Tra
                             pieChartData,
                             stackBarData,
                             totalValue
-                        } = getChartsDataForMonth(transactionsGrouped.incomes, year, month, current);
+                        } = getTransactionChartsDataForMonth(transactionsGrouped.incomes, year, month, currentMonth);
                         incomesPieChartData = pieChartData;
                         incomesStackBarData = stackBarData;
                         incomeTotalValue = totalValue;
@@ -124,7 +128,7 @@ function TransactionVisualisations({transactionsGrouped, current, homePage}: Tra
                         const {
                             pieChartData,
                             totalValue
-                        } = getChartsDataForDay(transactionsGrouped.incomes, year, month, day);
+                        } = getTransactionChartsDataForDay(transactionsGrouped.incomes, year, month, day);
                         incomesPieChartData = pieChartData;
                         incomeTotalValue = totalValue;
                     }
@@ -138,7 +142,7 @@ function TransactionVisualisations({transactionsGrouped, current, homePage}: Tra
                     pieChartData,
                     stackBarData,
                     totalValue
-                } = getChartsDataForYear(transactionsGrouped.expenses, year);
+                } = getTransactionChartsDataForYear(transactionsGrouped.expenses, year);
                 expensesPieChartData = pieChartData;
                 expensesStackBarData = stackBarData;
                 expenseTotalValue = totalValue;
@@ -150,7 +154,7 @@ function TransactionVisualisations({transactionsGrouped, current, homePage}: Tra
                             pieChartData,
                             stackBarData,
                             totalValue
-                        } = getChartsDataForMonth(transactionsGrouped.expenses, year, month, current);
+                        } = getTransactionChartsDataForMonth(transactionsGrouped.expenses, year, month, currentMonth);
                         expensesPieChartData = pieChartData;
                         expensesStackBarData = stackBarData;
                         expenseTotalValue = totalValue;
@@ -161,7 +165,7 @@ function TransactionVisualisations({transactionsGrouped, current, homePage}: Tra
                         const {
                             pieChartData,
                             totalValue
-                        } = getChartsDataForDay(transactionsGrouped.expenses, year, month, day);
+                        } = getTransactionChartsDataForDay(transactionsGrouped.expenses, year, month, day);
                         incomesPieChartData = pieChartData;
                         incomeTotalValue = totalValue;
                     }
@@ -195,15 +199,13 @@ function TransactionVisualisations({transactionsGrouped, current, homePage}: Tra
     }
 
     function getSelectNodes() {
-        let selectNodes = getDateSelectOptions(transactionVariant, transactionsGrouped);
+        let selectNodes = getTransactionDateSelectOptions(transactionVariant, transactionsGrouped);
         setSelectNodes(selectNodes);
     }
-
 
     const handleTreeSelectChange = (e: TreeSelectChangeEvent) => {
         const tmp = e.value as string;
         const dateFilters = tmp.split(".");
-        console.log(tmp);
         setSelectNode(tmp);
         setYear(new Date().getFullYear());
         setMonth(undefined);
@@ -223,7 +225,7 @@ function TransactionVisualisations({transactionsGrouped, current, homePage}: Tra
     return (
         <div className="transaction-visualisations">
             <div className={"transaction-visualisations__header"}>
-                {homePage ? <h2>Your transactions this month</h2> : <h2>Your Transactions</h2>}
+                <h2>Transactions</h2>
                 <div className={"transaction-visualisations__header__buttons"}>
                     <SelectButton value={transactionVariant} onChange={(e) => setTransactionVariant(e.value)}
                                   options={[StackBarVariant.EXPENSE, StackBarVariant.INCOME]}/>

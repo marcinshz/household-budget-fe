@@ -27,5 +27,11 @@
         flex-direction: row;
       }
     }
+
+    &__this-month {
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
   }
 }

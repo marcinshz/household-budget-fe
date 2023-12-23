@@ -1,6 +1,7 @@
-import {PieChartData, StackBarData, TransactionsGrouped} from "../types.ts";
+import {BalanceStamp, PieChartData, StackBarData, TransactionsGrouped} from "../types.ts";
+import {WalletListItem} from "../../../../types.ts";
 
-export function getChartsDataForYear(transactionsGrouped: TransactionsGrouped, year: number) {
+export function getTransactionChartsDataForYear(transactionsGrouped: TransactionsGrouped, year: number) {
     let categoryLabels: string[] = [];
     let categoryValues: number[][] = [];
     let totalValue = 0;
@@ -63,7 +64,7 @@ export function getChartsDataForYear(transactionsGrouped: TransactionsGrouped, y
 
 const currentDay = new Date().getDate();
 
-export function getChartsDataForMonth(transactionsGrouped: TransactionsGrouped, year: number, month: number, current: boolean) {
+export function getTransactionChartsDataForMonth(transactionsGrouped: TransactionsGrouped, year: number, month: number, current: boolean) {
     let categoryLabels: string[] = [];
     let categoryValues: number[][] = [];
     let totalValue = 0;
@@ -103,7 +104,7 @@ export function getChartsDataForMonth(transactionsGrouped: TransactionsGrouped, 
         }
     })
 
-    labels = Array.from({length: currentDay}, (_, index) => (index + 1).toString() + "." + month);
+    labels = Array.from({length: current ? currentDay : new Date(year, month, 0).getDate()}, (_, index) => (index + 1).toString() + "." + month);
 
     stackBarData = {
         labels,
@@ -129,7 +130,7 @@ export function getChartsDataForMonth(transactionsGrouped: TransactionsGrouped, 
     }
 }
 
-export function getChartsDataForDay(transactionsGrouped: TransactionsGrouped, year: number, month: number, day: number) {
+export function getTransactionChartsDataForDay(transactionsGrouped: TransactionsGrouped, year: number, month: number, day: number) {
     let totalValue = 0;
     let pieChartData: PieChartData = {
         labels: [],
@@ -154,5 +155,81 @@ export function getChartsDataForDay(transactionsGrouped: TransactionsGrouped, ye
     return {
         pieChartData,
         totalValue
+    }
+}
+
+export function getBalanceChartDataForYear(wallets: WalletListItem[], year: number) {
+    const walletsChecked = wallets.filter((wallet) => {
+        return wallet.checked;
+    })
+
+    let labels = Array.from({length: 12}, (_, index) => (index + 1).toString() + "." + year);
+    let data = Array.from({length: 12}, () => 0);
+
+    walletsChecked.forEach((wallet, walletIndex) => {
+        labels.forEach((_value, monthIndex) => {
+            const month = monthIndex + 1;
+            let latest: BalanceStamp | null = null;
+            wallet.balanceStamps.forEach((stamp: BalanceStamp, index: number) => {
+                const stampMonth = new Date(stamp.createdAt).getMonth() + 1;
+                const stampYear = new Date(stamp.createdAt).getFullYear();
+
+                if (stampMonth === month && stampYear === year) {
+                    if (latest) {
+                        if (new Date(latest.createdAt) < new Date(stamp.createdAt)) latest = stamp;
+                    } else latest = stamp;
+                }
+            })
+            if (latest) data[monthIndex] = data[monthIndex] + (latest as BalanceStamp).balance;
+        })
+    })
+    return {
+        labels,
+        datasets: [
+            {
+                label: 'Balance',
+                data: data
+            }
+        ]
+    }
+}
+
+export function getBalanceChartDataForMonth(wallets: WalletListItem[], year: number, month: number, current: boolean) {
+    const walletsChecked = wallets.filter((wallet) => {
+        return wallet.checked;
+    })
+    const currentDay = new Date().getDate();
+    const length = new Date(year, month, 0).getDate();
+
+    let labels = Array.from({length: current ? currentDay : length}, (_, index) => (index + 1).toString() + "." + month);
+    let data = Array.from({length: current ? currentDay : length}, () => 0);
+    //14.12 wallet 3 nie ma stampa
+    walletsChecked.forEach((wallet, walletIndex) => {
+        labels.forEach((_value, dayIndex) => {
+            const day = dayIndex + 1;
+            let latest: BalanceStamp | null = null;
+            let latestLastMonth: BalanceStamp | null = null;
+            wallet.balanceStamps.forEach((stamp: BalanceStamp, index: number) => {
+                const stampDay = new Date(stamp.createdAt).getDate();
+                const stampMonth = new Date(stamp.createdAt).getMonth() + 1;
+                const stampYear = new Date(stamp.createdAt).getFullYear();
+
+                if (stampMonth === month && stampYear === year && stampDay === day) {
+                    if (latest) {
+                        if (new Date(latest.createdAt) < new Date(stamp.createdAt)) latest = stamp;
+                    } else latest = stamp;
+                }
+            })
+            if (latest) data[dayIndex] = data[dayIndex] + (latest as BalanceStamp).balance;
+        })
+    })
+    return {
+        labels,
+        datasets: [
+            {
+                label: 'Balance',
+                data: data
+            }
+        ]
     }
 }

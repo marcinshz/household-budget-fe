@@ -66,6 +66,7 @@ export class CreateCategoryDto {
 export interface User {
     id: string;
     username: string;
+    currency: string;
 }
 
 export interface BalanceStamp {
@@ -78,7 +79,8 @@ export interface Wallet {
     id: string;
     name: string;
     balance: number;
-    balanceStamps: BalanceStamp[]
+    balanceStamps: BalanceStamp[],
+    createdAt: Date;
 }
 
 export interface WalletListItem {
@@ -87,6 +89,7 @@ export interface WalletListItem {
     balance: number;
     checked: boolean;
     balanceStamps: BalanceStamp[]
+    createdAt: Date;
 }
 
 export interface Category {
@@ -130,6 +133,8 @@ export type PieChartData = {
         label: string;
     }[]
 }
+
+export type LineChartData = PieChartData;
 
 /*export type TransactionsGrouped = Record<number, Record<number, Record<number, ChartData>>>
 

@@ -16,7 +16,6 @@ const router = createBrowserRouter([
         path: "/",
         element: <HomePage/>,
         loader: async () => {
-            console.log('aaa')
             return await AuthHandler(redirect, store.dispatch);
         },
         errorElement: <ErrorPage/>

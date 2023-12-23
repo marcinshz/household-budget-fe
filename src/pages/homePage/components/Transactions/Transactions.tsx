@@ -1,13 +1,14 @@
-import {Expense, Income, TransactionType} from "../../../../types.ts";
+import {TransactionType} from "../../../../types.ts";
 import TransactionList from "../TransactionList/TransactionList.tsx";
 import './Transactions.scss';
+import {useSelector} from "react-redux";
+import {RootState} from "../../../../redux/store.ts";
 
-type TransactionsProps = {
-    incomes: Income[] | Expense[];
-    expenses: Income[] | Expense[];
-}
 
-function Transactions({incomes, expenses}: TransactionsProps) {
+function Transactions() {
+    const {incomes, expenses} = useSelector((state: RootState) => {
+        return {incomes: state.transactions.incomes, expenses: state.transactions.expenses};
+    })
     return (
         <div className="transactions">
             <div className="transactions__row">
