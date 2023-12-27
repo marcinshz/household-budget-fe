@@ -1,31 +1,41 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './Navbar.scss';
 import {Sidebar} from 'primereact/sidebar';
 import {Button} from 'primereact/button';
-import {TransactionType, User} from '../../../../types';
+import {TransactionType, UpdateCurrencyDto} from '../../../../types';
 import {Dropdown} from 'primereact/dropdown';
 import {useNavigate} from 'react-router-dom';
 import CreateCategoryModal from "../CreateCategoryModal/CreateCategoryModal.tsx";
+import {faUser} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {updateCurrency} from "../../../../DataService.tsx";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../../redux/store.ts";
 
-function Navbar(props: { user: User }) {
-    const {user} = props;
+function Navbar() {
+    const {user} = useSelector((state: RootState) => {
+        return {user: state.user};
+    });
     const [sidebar, setSidebar] = useState(false);
-    const [currency, setCurrency] = useState("EUR");
+    const [currency, setCurrency] = useState(user.currency);
     const [dialog, setDialog] = useState(false);
     const [type, setType] = useState<TransactionType>(TransactionType.INCOME);
     const navigate = useNavigate();
     useEffect(() => {
-        localStorage.setItem("currency", currency)
+        if (currency) localStorage.setItem("currency", currency);
     }, [currency])
     useEffect(() => {
         const currencyTmp = localStorage.getItem("currency");
         if (currencyTmp) setCurrency(currencyTmp);
     }, [])
 
+    console.log(user)
+
     const handleSignOut = () => {
         localStorage.removeItem("id");
         localStorage.removeItem("username");
         localStorage.removeItem("access_token");
+        localStorage.removeItem("currency");
         navigate('/login')
     }
 
@@ -34,27 +44,43 @@ function Navbar(props: { user: User }) {
         setDialog(true);
     }
 
+    const handleCurrencyChange = async (e) => {
+        setCurrency(e.target.value);
+        const tmp = await updateCurrency(new UpdateCurrencyDto(e.target.value, user.id));
+        localStorage.setItem("currency", tmp);
+    }
 
     return (
         <div className="navbar">
-            <h3>Your budget</h3>
+            <Button style={{padding: 0}} onClick={() => navigate('/')}>
+                <h3>Your budget</h3>
+            </Button>
             <div className="navbar__right-side">
                 <Dropdown
                     value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
+                    onChange={handleCurrencyChange}
                     options={["EUR", "USD", "GBP", "PLN"]}
                     style={{width: '110px', height: '30px', display: 'flex', alignItems: 'center'}}
                 />
                 <Button
-                    icon="pi pi-user"
                     rounded
                     text
                     raised
                     severity="info"
                     aria-label="User"
-                    style={{width: '35px', height: '35px', backgroundColor: 'white'}}
+                    style={{
+                        width: '32px',
+                        height: '32px',
+                        backgroundColor: 'white',
+                        padding: 0,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
                     onClick={() => setSidebar(true)}
-                />
+                >
+                    <FontAwesomeIcon icon={faUser} size={"sm"} fixedWidth/>
+                </Button>
             </div>
             <Sidebar
                 visible={sidebar}

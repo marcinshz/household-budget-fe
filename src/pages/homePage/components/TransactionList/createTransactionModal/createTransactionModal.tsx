@@ -4,7 +4,7 @@ import {InputNumber} from "primereact/inputnumber";
 import {InputText} from "primereact/inputtext";
 import {Dropdown} from "primereact/dropdown";
 import {Button} from "primereact/button";
-import {CreateTransactionDto, TransactionType} from "../../../../../types.ts";
+import {Category, CreateTransactionDto, TransactionType} from "../../../../../types.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../../../../../redux/store.ts";
 import './createTransactionModal.scss';
@@ -39,6 +39,10 @@ function CreateTransactionModal({type, visible, setVisible}: ModalProps) {
                 }
             })
         }
+    }
+
+    function filterCategories(categories: Category[]) {
+        return categories.filter((category) => category.name !== 'Internal Transfer');
     }
 
     return (
@@ -82,7 +86,7 @@ function CreateTransactionModal({type, visible, setVisible}: ModalProps) {
                                 (e) => {
                                     setCategoryId(e.value);
                                 }}
-                            options={type === TransactionType.INCOME ? categories.incomes : categories.expenses}
+                            options={type === TransactionType.INCOME ? filterCategories(categories.incomes) : filterCategories(categories.expenses)}
                             optionLabel={'name'}
                             optionValue={'id'}
                         />

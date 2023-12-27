@@ -29,7 +29,7 @@ function HomePage() {
 
     return (
         <div className="home-page">
-            <Navbar user={user}/>
+            <Navbar/>
             <div className="home-page__content">
                 <ExpenseLimits/>
                 <WalletList/>

@@ -14,9 +14,8 @@ import {AppDispatch, RootState} from "../../../../redux/store.ts";
 function WalletList() {
     const [dialog, setDialog] = useState(false);
     const [dialogVariant, setDialogVariant] = useState<WalletModalVariants>();
-    let currency = "EUR";//pobrac z localstorage
-    const {wallets} = useSelector((state: RootState) => {
-        return {wallets: state.wallets};
+    const {wallets, user} = useSelector((state: RootState) => {
+        return {wallets: state.wallets, user: state.user};
     })
     const dispatch = useDispatch<AppDispatch>();
     const handleWalletAction = (variant: WalletModalVariants) => {
@@ -68,7 +67,7 @@ function WalletList() {
                     {wallets.map((wallet, index) => (
                         <CheckboxCard
                             title={wallet.name}
-                            subTitle={getLatestBalance(wallet) + currency}
+                            subTitle={getLatestBalance(wallet) + ' ' + user.currency}
                             checked={wallet.checked}
                             onChange={(_e) => handleWalletChange(index)} key={wallet.id}
                         />
@@ -76,7 +75,7 @@ function WalletList() {
                 </div>
                 :
                 <div className="wallet-list__cards--empty">
-                    <h3>There is no wallets yet...</h3>
+                    <h3>No wallets found</h3>
                     <p>Add your first wallet!</p>
                 </div>
             }

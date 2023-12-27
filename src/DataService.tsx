@@ -8,6 +8,7 @@ import {
     Expense,
     Income,
     TransactionsGrouped,
+    UpdateCurrencyDto,
     UserAuthenticatedDto,
     UserCredentialsDto,
     Wallet,
@@ -48,6 +49,18 @@ export const authenticate = async (accessToken: string): Promise<Response> => {
         return res.json();
     }).then(data => {
         return data;
+    })
+}
+
+export const updateCurrency = async (updateCurrencyDto: UpdateCurrencyDto) => {
+    return await fetch(api_url + "user", {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updateCurrencyDto)
+    }).then(res => res.json()).then(() => {
+        return updateCurrencyDto.currency;
     })
 }
 

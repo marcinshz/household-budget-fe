@@ -6,6 +6,8 @@ import {Tooltip} from "primereact/tooltip";
 import './TransactionList.scss';
 import {format} from 'date-fns';
 import {Paginator} from "primereact/paginator";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../../redux/store.ts";
 
 interface TransactionListProps {
     transactions: Expense[] | Income[];
@@ -15,7 +17,9 @@ interface TransactionListProps {
 function TransactionList({transactions, type}: TransactionListProps) {
     const [modalVisible, setModalVisible] = useState(false);
     const [first, setFirst] = useState(0);
-
+    const {user} = useSelector((state: RootState) => {
+        return {user: state.user};
+    });
     const handlePageChange = (event) => {
         setFirst(event.first);
     };
@@ -55,7 +59,8 @@ function TransactionList({transactions, type}: TransactionListProps) {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="transaction-list__content__list__item__value">{transaction.value}</div>
+                                <div
+                                    className="transaction-list__content__list__item__value">{transaction.value + ' ' + user.currency}</div>
                             </li>
                         ))}
                     </ul>

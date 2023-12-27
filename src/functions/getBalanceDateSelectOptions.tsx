@@ -1,6 +1,6 @@
 import {SelectNode, WalletListItem} from "../types.ts";
 
-export function getBalanceDateSelectOptions(wallets: WalletListItem[], current) {
+export function getBalanceDateSelectOptions(wallets: WalletListItem[]) {
     const checkedWallets = wallets.filter((wallet) => {
         return wallet.checked;
     })
@@ -17,31 +17,19 @@ export function getBalanceDateSelectOptions(wallets: WalletListItem[], current) 
 
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1;
-    const currentDay = new Date().getDate();
 
     let yearNodes: SelectNode[] = [];
 
     for (let year = oldest.getFullYear(); year <= currentYear; year++) {
         let yearChildren: SelectNode[] = [];
         const monthMax = year === currentYear ? currentMonth : 12;
-        for (let month = 1; month <= monthMax; month++) {
-            let monthChildren: SelectNode[] = [];
-            const dayMax = year === currentYear && month === currentMonth ? currentDay : new Date(year, month, 0).getDate();
-            for (let day = 1; day <= dayMax; day++) {
-                monthChildren.push({
-                    label: day.toString(),
-                    id: day.toString() + "." + month.toString() + "." + year.toString(),
-                    data: day.toString() + "." + month.toString() + "." + year.toString(),
-                    key: day.toString() + "." + month.toString() + "." + year.toString(),
-                    children: []
-                })
-            }
+        for (let month = oldest.getMonth() + 1; month <= monthMax; month++) {
             yearChildren.push({
                 label: month.toString(),
                 id: month.toString() + "." + year.toString(),
                 data: month.toString() + "." + year.toString(),
                 key: month.toString() + "." + year.toString(),
-                children: monthChildren
+                children: []
             })
         }
         yearNodes.push({
@@ -53,5 +41,5 @@ export function getBalanceDateSelectOptions(wallets: WalletListItem[], current) 
         })
     }
 
-    console.log(yearNodes);
+    return yearNodes
 }

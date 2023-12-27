@@ -7,7 +7,7 @@ export async function AuthHandler(redirect: RedirectFunction, dispatch: Function
     const accessToken = localStorage.getItem('access_token');
     const userId = localStorage.getItem('id');
     const username = localStorage.getItem('username');
-    const currency = localStorage.getItem('CURRENCY');
+    const currency = localStorage.getItem('currency');
     if (accessToken && userId && username && currency) {
         return await authenticate(accessToken).then((response: any) => {
             return response.username;

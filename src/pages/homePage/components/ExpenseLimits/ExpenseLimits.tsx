@@ -39,8 +39,8 @@ function ExpenseLimits() {
                             <div className="expense-limits__cards__card">
                                 <ProgressBar value={Math.round(limit.currentValue / limit.value * 100)}/>
                                 <div className="expense-limits__cards__card__values">
-                                    <h3>{limit.currentValue}</h3>
-                                    <h3>{limit.value}</h3>
+                                    <h3>{limit.currentValue + ' ' + user.currency}</h3>
+                                    <h3>{limit.value + ' ' + user.currency}</h3>
                                 </div>
                             </div>
 
@@ -49,7 +49,7 @@ function ExpenseLimits() {
                 </div>
                 :
                 <div className="expense-limits__cards--empty">
-                    <h3>There is no limits yet...</h3>
+                    <h3>No limits found</h3>
                     <p>Add your expense limit!</p>
                 </div>
             }

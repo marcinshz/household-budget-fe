@@ -10,6 +10,7 @@ import store from './redux/store.ts';
 import ErrorPage from './pages/errorPage/errorPage.tsx';
 import {AuthHandler} from "./auth.ts";
 import TransactionsPage from "./pages/transactionsPage/transactionsPage.tsx";
+import BalancePage from "./pages/BalancePage/BalancePage.tsx";
 
 const router = createBrowserRouter([
     {
@@ -28,7 +29,14 @@ const router = createBrowserRouter([
         },
         errorElement: <ErrorPage/>
     },
-
+    {
+        path: "/balance-history",
+        element: <BalancePage/>,
+        loader: async () => {
+            return await AuthHandler(redirect, store.dispatch);
+        },
+        errorElement: <ErrorPage/>
+    },
     {
         path: '/login',
         element: <LoginPage/>

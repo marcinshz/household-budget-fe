@@ -57,16 +57,23 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
             backgroundColor: string[]
         }[]
     }>()
-    const [year, setYear] = useState<number>(new Date().getFullYear());
-    const [month, setMonth] = useState<number | undefined>(new Date().getMonth() + 1);
-    const [day, setDay] = useState<number | undefined>()
+    const [dateFilters, setDateFilters] = useState<{
+        year: number,
+        month: number | undefined,
+        day: number | undefined
+    }>({
+        year: new Date().getFullYear(),
+        month: new Date().getMonth() + 1,
+        day: undefined
+    });
     const navigate = useNavigate();
     const [selectNodes, setSelectNodes] = useState<SelectNode[]>([]);
     const [selectNode, setSelectNode] = useState<string>("");
     const [showTreeSelect, setShowTreeSelect] = useState<boolean>(false);
     useEffect(() => {
+        const {year, month, day} = dateFilters;
         createVisualisationsData(year, month, day);
-    }, [transactionsGrouped, year, month, day]);
+    }, [transactionsGrouped, dateFilters]);
 
     useEffect(() => {
         getSelectNodes()
@@ -166,8 +173,8 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
                             pieChartData,
                             totalValue
                         } = getTransactionChartsDataForDay(transactionsGrouped.expenses, year, month, day);
-                        incomesPieChartData = pieChartData;
-                        incomeTotalValue = totalValue;
+                        expensesPieChartData = pieChartData;
+                        expenseTotalValue = totalValue;
                     }
                 }
             }
@@ -207,18 +214,29 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
         const tmp = e.value as string;
         const dateFilters = tmp.split(".");
         setSelectNode(tmp);
-        setYear(new Date().getFullYear());
-        setMonth(undefined);
-        setDay(undefined);
+        setDateFilters({
+            year: new Date().getFullYear(),
+            month: undefined,
+            day: undefined
+        })
         if (dateFilters.length === 3) {
-            setYear(parseInt(dateFilters[2]));
-            setMonth(parseInt(dateFilters[1]));
-            setDay(parseInt(dateFilters[0]));
+            setDateFilters({
+                year: parseInt(dateFilters[2]),
+                month: parseInt(dateFilters[1]),
+                day: parseInt(dateFilters[0])
+            })
         } else if (dateFilters.length === 2) {
-            setYear(parseInt(dateFilters[1]));
-            setMonth(parseInt(dateFilters[0]));
+            setDateFilters({
+                year: parseInt(dateFilters[1]),
+                month: parseInt(dateFilters[0]),
+                day: undefined
+            })
         } else if (dateFilters.length === 1) {
-            setYear(parseInt(dateFilters[0]));
+            setDateFilters({
+                year: parseInt(dateFilters[0]),
+                month: undefined,
+                day: undefined
+            })
         }
     }
 
@@ -248,27 +266,27 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
                 </div>
             </div>
             <div className="transaction-visualisations__row">
-                <div className="transaction-visualisations__pie-chart">
-                    {/*TODO dodać coś, co wyświetli komunikat ze nie ma danych jezeli wykres bd pusty. Można to określić po totalValue*/}
-                    {pieChartData && <Chart
-                        data={transactionVariant === StackBarVariant.INCOME ? pieChartData.incomes : pieChartData.expenses}
-                        type="pie" options={{
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'Share of each category'
-                            },
-                            legend: {
-                                labels: {
-                                    usePointStyle: true
+                {pieChartData && !(pieChartData.incomes.labels.length === 0 && pieChartData.expenses.labels.length === 0) &&
+                    <div className="transaction-visualisations__pie-chart">
+                        <Chart
+                            data={transactionVariant === StackBarVariant.INCOME ? pieChartData.incomes : pieChartData.expenses}
+                            type="pie" options={{
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Share of each category'
                                 },
-                                position: 'bottom'
-                            }
-                        },
-                        responsive: true,
-                        width: '50%'
-                    }}/>}
-                </div>
+                                legend: {
+                                    labels: {
+                                        usePointStyle: true
+                                    },
+                                    position: 'bottom'
+                                }
+                            },
+                            responsive: true,
+                            width: '50%'
+                        }}/>
+                    </div>}
                 {totalValueBarData && <div className="transaction-visualisations__total-value">
                     <Chart type="bar" data={totalValueBarData} options={{
                         plugins: {
@@ -287,36 +305,37 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
                         width: '50%'
                     }}/>
                     <div
-                        className={`transaction-visualisations__total-value__text transaction-visualisations__total-value__text--${totalValueBarData.datasets[0].data[0] - totalValueBarData.datasets[1].data[0] > 0 ? "positive" : "negative"}`}>
+                        className={`transaction-visualisations__total-value__text transaction-visualisations__total-value__text--${totalValueBarData.datasets[0].data[0] - totalValueBarData.datasets[1].data[0] >= 0 ? "positive" : "negative"}`}>
                         Total
-                        difference: {totalValueBarData.datasets[0].data[0] - totalValueBarData.datasets[1].data[0] > 0 ? "+" : "-"}{totalValueBarData.datasets[0].data[0] - totalValueBarData.datasets[1].data[0]}
+                        difference: {totalValueBarData.datasets[0].data[0] - totalValueBarData.datasets[1].data[0] >= 0 ? "+" : ""}{totalValueBarData.datasets[0].data[0] - totalValueBarData.datasets[1].data[0]}
                     </div>
                 </div>}
             </div>
 
-            {!day && stackBarData && <Chart type="bar"
-                                            data={transactionVariant === StackBarVariant.INCOME ? stackBarData.incomes : stackBarData.expenses}
-                                            options={{
-                                                type: 'bar',
-                                                plugins: {
-                                                    title: {
-                                                        display: true,
-                                                        text: 'Share of each category by day'
-                                                    },
-                                                },
-                                                options: {
-                                                    responsive: true,
-                                                    interaction: {
-                                                        intersect: false,
-                                                    },
-                                                    scales: {
-                                                        y: {
-                                                            stacked: true,
-                                                            beginAtZero: true
-                                                        }
-                                                    }
-                                                }
-                                            }}/>}
+            {!dateFilters.day && stackBarData && !(stackBarData.incomes.labels.length === 0 && stackBarData.expenses.labels.length === 0) &&
+                <Chart type="bar"
+                       data={transactionVariant === StackBarVariant.INCOME ? stackBarData.incomes : stackBarData.expenses}
+                       options={{
+                           type: 'bar',
+                           plugins: {
+                               title: {
+                                   display: true,
+                                   text: 'Share of each category by day'
+                               },
+                           },
+                           options: {
+                               responsive: true,
+                               interaction: {
+                                   intersect: false,
+                               },
+                               scales: {
+                                   y: {
+                                       stacked: true,
+                                       beginAtZero: true
+                                   }
+                               }
+                           }
+                       }}/>}
         </div>
     );
 }

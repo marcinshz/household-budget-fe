@@ -15,9 +15,9 @@ export interface UserAuthenticatedDto {
         username: string,
         password: string,
         id: string
+        currency: string;
     }
     access_token: string,
-    currency: string;
 }
 
 export class CreateWalletDto {
@@ -249,5 +249,15 @@ export class CreateLimitDto {
         this.value = value;
         this.userId = userId;
         this.categoryId = categoryId;
+    }
+}
+
+export class UpdateCurrencyDto {
+    currency: string;
+    userId: string;
+
+    constructor(currency: string, userId: string) {
+        this.currency = currency;
+        this.userId = userId;
     }
 }

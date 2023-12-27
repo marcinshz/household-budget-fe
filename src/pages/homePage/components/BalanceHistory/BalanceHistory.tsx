@@ -5,8 +5,10 @@ import {Button} from "primereact/button";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {getBalanceChartDataForMonth, getBalanceChartDataForYear} from "../../../../functions/getChartsData.ts";
-import {LineChartData} from "../../../../types.ts";
+import {LineChartData, SelectNode} from "../../../../types.ts";
 import {Chart} from "primereact/chart";
+import {TreeSelect, TreeSelectChangeEvent} from "primereact/treeselect";
+import {getBalanceDateSelectOptions} from "../../../../functions/getBalanceDateSelectOptions.tsx";
 
 export type BalanceHistoryProps = {
     homePage?: boolean;
@@ -20,10 +22,12 @@ function BalanceHistory({homePage}: BalanceHistoryProps) {
         labels: [],
         datasets: []
     })
-    const [showTreeSelect, setShowTreeSelect] = useState(false);
     const navigate = useNavigate();
     const [year, setYear] = useState<number>(new Date().getFullYear());
     const [month, setMonth] = useState<number | undefined>(new Date().getMonth() + 1);
+    const [selectNodes, setSelectNodes] = useState<SelectNode[]>([]);
+    const [selectNode, setSelectNode] = useState<string>("");
+    const [showTreeSelect, setShowTreeSelect] = useState<boolean>(false);
 
     useEffect(() => {
         if (wallets && wallets.length) {
@@ -43,6 +47,33 @@ function BalanceHistory({homePage}: BalanceHistoryProps) {
         setLineChartData(data)
     }
 
+    const handleTreeSelectChange = (e: TreeSelectChangeEvent) => {
+        const tmp = e.value as string;
+        const dateFilters = tmp.split(".");
+        setSelectNode(tmp);
+        setYear(new Date().getFullYear());
+        setMonth(undefined);
+        if (dateFilters.length === 2) {
+            setYear(parseInt(dateFilters[1]));
+            setMonth(parseInt(dateFilters[0]));
+        } else if (dateFilters.length === 1) {
+            setYear(parseInt(dateFilters[0]));
+        }
+    }
+
+    function getSelectNodes() {
+        let selectNodes = getBalanceDateSelectOptions(wallets);
+        setSelectNodes(selectNodes);
+    }
+
+    useEffect(() => {
+        if (wallets && wallets.length) getSelectNodes();
+    }, [wallets]);
+
+    useEffect(() => {
+        if (selectNodes.length > 0) setShowTreeSelect(true);
+    }, [selectNodes]);
+
     return (
         <div className="balance-history">
             <div className={"balance-history__header"}>
@@ -54,7 +85,7 @@ function BalanceHistory({homePage}: BalanceHistoryProps) {
                         }}/>
                     }
 
-                    {/*                    {!homePage && showTreeSelect &&
+                    {!homePage && showTreeSelect &&
                         <TreeSelect
                             value={selectNode}
                             options={selectNodes}
@@ -62,7 +93,7 @@ function BalanceHistory({homePage}: BalanceHistoryProps) {
                             style={{minWidth: '200px'}}
                             placeholder="Pick a date"
                         />
-                    }*/}
+                    }
 
                 </div>
             </div>
