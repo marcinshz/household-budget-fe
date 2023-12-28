@@ -1,0 +1,26 @@
+.p-card {
+  &-content {
+    margin: 0;
+    padding: 8px 0;
+    width: 90%;
+  }
+
+  &-body {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.expense-limit-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 36px;
+  width: 100%;
+
+  &__values {
+    display: flex;
+    justify-content: space-between;
+  }
+}

@@ -11,6 +11,7 @@ import TransactionVisualisations from "./components/TransactionVisualisations/Tr
 import {getTransactionsThunk} from "../../redux/thunks.ts";
 import ExpenseLimits from "./components/ExpenseLimits/ExpenseLimits.tsx";
 import BalanceHistory from "./components/BalanceHistory/BalanceHistory.tsx";
+import SavingsGoals from "./components/SavingsGoal/SavingsGoals.tsx";
 
 function HomePage() {
     const {user, wallets, transactions} = useSelector((state: RootState) => {
@@ -32,6 +33,7 @@ function HomePage() {
             <Navbar/>
             <div className="home-page__content">
                 <ExpenseLimits/>
+                <SavingsGoals/>
                 <WalletList/>
                 <div className={"home-page__content__this-month"}>
                     {wallets && wallets.length &&

@@ -39,3 +39,12 @@
     }
   }
 }
+
+.p-card {
+  height: 100%;
+
+  &-content {
+    display: flex;
+    justify-content: center;
+  }
+}

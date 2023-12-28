@@ -239,7 +239,7 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
             })
         }
     }
-
+    
     return (
         <div className="transaction-visualisations">
             <div className={"transaction-visualisations__header"}>

@@ -3,6 +3,7 @@ import {
     Category,
     CreateCategoryDto,
     CreateLimitDto,
+    CreateSavingsGoalDto,
     CreateTransferDto,
     CreateWalletDto,
     Expense,
@@ -17,11 +18,13 @@ import {
     createAccount,
     createCategory,
     createLimit,
+    createSavingsGoal,
     createTransfer,
     createWallet,
     getCategories,
     getLimits,
     getOverview,
+    getSavingsGoals,
     getWallets,
     removeWallet,
     signIn
@@ -108,15 +111,32 @@ export const createTransferThunk = createAsyncThunk(
 
 //LIMIT THUNKS
 export const createLimitThunk = createAsyncThunk(
-    'limit/createLimit',
+    'limits/createLimit',
     async (limitData: CreateLimitDto) => {
         return await createLimit(limitData);
     }
 )
 
 export const getLimitsThunk = createAsyncThunk(
-    'limit/getLimits',
+    'limits/getLimits',
     async (userId: string) => {
         return await getLimits(userId);
     }
 )
+
+//GOAL THUNKS
+export const createGoalThunk = createAsyncThunk(
+    'goals/createGoal',
+    async (createSavingsGoalDto: CreateSavingsGoalDto) => {
+        return await createSavingsGoal(createSavingsGoalDto);
+    }
+)
+
+export const getGoalsThunk = createAsyncThunk(
+    'goals/getGoals',
+    async (userId: string) => {
+        return await getSavingsGoals(userId);
+    }
+)
+
+

@@ -236,6 +236,17 @@ export type Limit = {
     deadline: Date;
 }
 
+export enum LimitType {
+    CURRENT = "current",
+    COMPLETED = "completed"
+}
+
+export enum GoalType {
+    CURRENT = "current",
+    PAST = "past"
+}
+
+
 export class CreateLimitDto {
     categoryId: string;
     start: Date;
@@ -260,4 +271,33 @@ export class UpdateCurrencyDto {
         this.currency = currency;
         this.userId = userId;
     }
+}
+
+export class CreateSavingsGoalDto {
+    name: string;
+    start: Date;
+    deadline: Date;
+    userId: string;
+    value: number;
+    note: string;
+
+    constructor(name: string, start: Date, deadline: Date, userId: string, value: number, note: string) {
+        this.name = name;
+        this.start = start;
+        this.deadline = deadline;
+        this.userId = userId;
+        this.value = value;
+        this.note = note;
+    }
+}
+
+export type SavingsGoal = {
+    id: string;
+    name: string;
+    start: Date;
+    deadline: Date;
+    value: number;
+    note: string;
+    wallet: Wallet;
+    completed: boolean;
 }

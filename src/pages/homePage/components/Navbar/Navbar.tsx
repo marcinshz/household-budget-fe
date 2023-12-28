@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import './Navbar.scss';
 import {Sidebar} from 'primereact/sidebar';
 import {Button} from 'primereact/button';
@@ -29,8 +29,6 @@ function Navbar() {
         if (currencyTmp) setCurrency(currencyTmp);
     }, [])
 
-    console.log(user)
-
     const handleSignOut = () => {
         localStorage.removeItem("id");
         localStorage.removeItem("username");
@@ -49,7 +47,7 @@ function Navbar() {
         const tmp = await updateCurrency(new UpdateCurrencyDto(e.target.value, user.id));
         localStorage.setItem("currency", tmp);
     }
-
+    
     return (
         <div className="navbar">
             <Button style={{padding: 0}} onClick={() => navigate('/')}>

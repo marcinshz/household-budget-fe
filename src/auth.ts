@@ -1,7 +1,7 @@
 import {authenticate} from "./DataService.tsx";
 import {RedirectFunction} from "react-router-dom";
 import {setUser} from "./redux/userSlice.ts";
-import {getCategoriesThunk, getLimitsThunk, getWalletsThunk} from "./redux/thunks.ts";
+import {getCategoriesThunk, getGoalsThunk, getLimitsThunk, getWalletsThunk} from "./redux/thunks.ts";
 
 export async function AuthHandler(redirect: RedirectFunction, dispatch: Function): Promise<Response> {
     const accessToken = localStorage.getItem('access_token');
@@ -17,6 +17,7 @@ export async function AuthHandler(redirect: RedirectFunction, dispatch: Function
             dispatch(getWalletsThunk(userId));
             dispatch(getCategoriesThunk(userId));
             dispatch(getLimitsThunk(userId));
+            dispatch(getGoalsThunk(userId));
             return new Response(data);
         })
     }

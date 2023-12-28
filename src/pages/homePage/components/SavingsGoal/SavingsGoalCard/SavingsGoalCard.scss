@@ -1,0 +1,29 @@
+.p-card {
+  &-content {
+    margin: 0;
+    padding: 8px 0;
+    width: 90%;
+  }
+
+  &-body {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.savings-goal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+
+  &__completed {
+    text-align: center;
+  }
+
+  &__values {
+    display: flex;
+    justify-content: space-between;
+  }
+}

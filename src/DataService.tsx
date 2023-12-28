@@ -2,6 +2,7 @@ import {
     Category,
     CreateCategoryDto,
     CreateLimitDto,
+    CreateSavingsGoalDto,
     CreateTransactionDto,
     CreateTransferDto,
     CreateWalletDto,
@@ -177,6 +178,24 @@ export const createLimit = async (createLimitDto: CreateLimitDto) => {
 
 export const getLimits = async (userId: string) => {
     return await fetch(api_url + 'limit/' + userId).then(res => res.json()).then(data => {
+        return data;
+    })
+}
+
+export const createSavingsGoal = async (createSavingsGoalDto: CreateSavingsGoalDto) => {
+    return await fetch(api_url + 'goal', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(createSavingsGoalDto)
+    }).then(res => res.json()).then(data => {
+        return data;
+    })
+}
+
+export const getSavingsGoals = async (userId: string) => {
+    return await fetch(api_url + 'goal/' + userId).then(res => res.json()).then(data => {
         return data;
     })
 }

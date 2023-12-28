@@ -1,18 +1,22 @@
-.checkbox-card{
+.checkbox-card {
   min-width: 160px;
-  &:hover{
-    cursor:pointer;
+
+  &:hover {
+    cursor: pointer;
   }
 
   .p-card {
-    &-content{
+    &-content {
+      margin: 0;
       padding: 8px 0;
-      margin:0;
     }
+
     &-body {
-      display: flex;
       align-items: center;
+      display: flex;
       flex-direction: column;
+      height: 100%;
+      justify-content: space-between;
     }
   }
 }

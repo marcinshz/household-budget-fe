@@ -10,7 +10,7 @@ import {AppDispatch, RootState} from "../../../../../redux/store.ts";
 import './createTransactionModal.scss';
 import {InputTextarea} from "primereact/inputtextarea";
 import {createTransaction} from "../../../../../DataService.tsx";
-import {getWalletsThunk} from "../../../../../redux/thunks.ts";
+import {getGoalsThunk, getLimitsThunk, getWalletsThunk} from "../../../../../redux/thunks.ts";
 
 interface ModalProps {
     type: TransactionType,
@@ -35,6 +35,8 @@ function CreateTransactionModal({type, visible, setVisible}: ModalProps) {
             createTransaction(transaction).then((response) => {
                 if (response) {
                     dispatch(getWalletsThunk(user.id));
+                    dispatch(getGoalsThunk(user.id));
+                    if (type === TransactionType.EXPENSE) dispatch(getLimitsThunk(user.id));
                     setVisible(false)
                 }
             })

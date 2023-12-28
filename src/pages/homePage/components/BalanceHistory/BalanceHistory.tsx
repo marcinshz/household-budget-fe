@@ -63,7 +63,7 @@ function BalanceHistory({homePage}: BalanceHistoryProps) {
 
     function getSelectNodes() {
         let selectNodes = getBalanceDateSelectOptions(wallets);
-        setSelectNodes(selectNodes);
+        if (selectNodes) setSelectNodes(selectNodes);
     }
 
     useEffect(() => {
@@ -71,7 +71,7 @@ function BalanceHistory({homePage}: BalanceHistoryProps) {
     }, [wallets]);
 
     useEffect(() => {
-        if (selectNodes.length > 0) setShowTreeSelect(true);
+        if (selectNodes && selectNodes.length > 0) setShowTreeSelect(true);
     }, [selectNodes]);
 
     return (

@@ -1,16 +1,18 @@
-.expense-limits {
+.savings-goals {
+  border-top: 2px solid #6366f1;
   display: flex;
   flex-direction: column;
   gap: 32px;
+  padding-top: 16px;
 
   &__header {
     align-items: center;
     display: flex;
     justify-content: space-between;
 
-    &__buttons{
-      display:flex;
-      gap:16px;
+    &__buttons {
+      display: flex;
+      gap: 16px;
     }
   }
 
@@ -56,4 +58,10 @@
       }
     }
   }
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }

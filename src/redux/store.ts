@@ -6,6 +6,7 @@ import {walletSlice} from "./walletSlice";
 import {categorySlice} from "./categorySlice.ts";
 import {transactionSlice} from "./transactionSlice.ts";
 import {limitSlice} from "./limitSlice.ts";
+import {goalSlice} from "./goalSlice.ts";
 
 const composedEnhancer = composeWithDevTools(applyMiddleware(thunkMiddleware))
 
@@ -15,7 +16,8 @@ const store = configureStore({
         wallets: walletSlice.reducer,
         categories: categorySlice.reducer,
         transactions: transactionSlice.reducer,
-        limits: limitSlice.reducer
+        limits: limitSlice.reducer,
+        goals: goalSlice.reducer
     }),
     enhancers: [composedEnhancer]
 })
