@@ -13,7 +13,9 @@ function CreateWalletModal({visible, setVisible}: ModalProps) {
     const [name, setName] = useState("");
     const [balance, setBalance] = useState(0);
     const dispatch = useDispatch<AppDispatch>();
-    const userId = useSelector((state: RootState) => state.user.id)
+    const user = useSelector((state: RootState) => {
+        return state.user;
+    })
     return (
         <Dialog header="Add new wallet" visible={visible} style={{width: '90vw', maxWidth: '600px'}}
                 onHide={() => setVisible(false)}>
@@ -27,7 +29,7 @@ function CreateWalletModal({visible, setVisible}: ModalProps) {
                     <InputNumber
                         id={"wallet-balance"}
                         mode="currency"
-                        currency="PLN"
+                        currency={user.currency}
                         inputId="currency-pl"
                         value={balance}
                         onChange={(e) => {
@@ -36,7 +38,7 @@ function CreateWalletModal({visible, setVisible}: ModalProps) {
                     />
                 </div>
                 <Button onClick={async () => {
-                    await dispatch(createWalletThunk(new CreateWalletDto(name, userId, balance))).then(() => setVisible(false))
+                    await dispatch(createWalletThunk(new CreateWalletDto(name, user.id, balance))).then(() => setVisible(false))
                 }} style={{justifyContent: 'center'}}>Create wallet</Button>
             </div>
         </Dialog>

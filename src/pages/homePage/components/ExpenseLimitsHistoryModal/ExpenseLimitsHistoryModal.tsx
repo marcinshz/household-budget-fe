@@ -2,7 +2,7 @@ import './ExpenseLimitsHistoryModal.scss';
 import {Limit, ModalProps} from "../../../../types.ts";
 import {Dialog} from "primereact/dialog";
 import ExpenseLimitCard from "../ExpenseLimits/ExpenseLimitCard/ExpenseLimitCard.tsx";
-import {Paginator} from "primereact/paginator";
+import {Paginator, PaginatorPageChangeEvent} from "primereact/paginator";
 import {useState} from "react";
 
 export interface ExpenseLimitsHistoryModalProps extends ModalProps {
@@ -13,7 +13,7 @@ export interface ExpenseLimitsHistoryModalProps extends ModalProps {
 function ExpenseLimitsHistoryModal({visible, setVisible, limits, currency}: ExpenseLimitsHistoryModalProps) {
     const [first, setFirst] = useState(0);
 
-    const handlePageChange = (event) => {
+    const handlePageChange = (event: PaginatorPageChangeEvent) => {
         setFirst(event.first);
     };
 
@@ -29,7 +29,7 @@ function ExpenseLimitsHistoryModal({visible, setVisible, limits, currency}: Expe
                 </ul>
                 :
                 <div className="expense-limit-history__cards--empty">
-                    <h3>No past goals found</h3>
+                    <h3>No past limits found</h3>
                 </div>
             }
             <Paginator first={first} rows={3} totalRecords={limits.length} onPageChange={handlePageChange}

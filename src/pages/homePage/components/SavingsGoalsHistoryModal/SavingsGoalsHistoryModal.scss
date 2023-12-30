@@ -4,7 +4,13 @@ ul {
   padding: 0;
 }
 
-.savings-goals-history__cards--empty {
-  padding: 64px 0;
-  text-align: center;
+.savings-goals-history {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  &__cards--empty {
+    padding: 64px 0;
+    text-align: center;
+  }
 }

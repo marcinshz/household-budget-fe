@@ -3,7 +3,7 @@ import './Navbar.scss';
 import {Sidebar} from 'primereact/sidebar';
 import {Button} from 'primereact/button';
 import {TransactionType, UpdateCurrencyDto} from '../../../../types';
-import {Dropdown} from 'primereact/dropdown';
+import {Dropdown, DropdownChangeEvent} from 'primereact/dropdown';
 import {useNavigate} from 'react-router-dom';
 import CreateCategoryModal from "../CreateCategoryModal/CreateCategoryModal.tsx";
 import {faUser} from "@fortawesome/free-solid-svg-icons";
@@ -42,12 +42,12 @@ function Navbar() {
         setDialog(true);
     }
 
-    const handleCurrencyChange = async (e) => {
+    const handleCurrencyChange = async (e: DropdownChangeEvent) => {
         setCurrency(e.target.value);
         const tmp = await updateCurrency(new UpdateCurrencyDto(e.target.value, user.id));
         localStorage.setItem("currency", tmp);
     }
-    
+
     return (
         <div className="navbar">
             <Button style={{padding: 0}} onClick={() => navigate('/')}>

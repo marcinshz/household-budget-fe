@@ -7,7 +7,7 @@ import {AppDispatch, RootState} from "../../../../redux/store.ts";
 import {Dropdown, DropdownChangeEvent} from "primereact/dropdown";
 import './CreateTransferModal.scss';
 import {Button} from "primereact/button";
-import {createTransferThunk, getWalletsThunk} from "../../../../redux/thunks.ts";
+import {createTransferThunk, getGoalsThunk, getWalletsThunk} from "../../../../redux/thunks.ts";
 
 function CreateTransferModal({visible, setVisible}: ModalProps) {
     const [value, setValue] = useState<number>(0);
@@ -28,7 +28,7 @@ function CreateTransferModal({visible, setVisible}: ModalProps) {
             let target = wallets.find((wallet) => {
                 return wallet.id === targetWalletId;
             })
-            if (source && target && source.balance - value >= 0) {
+            if (source && target && source.balanceStamps.length > 0 && source.balanceStamps[0].balance - value >= 0) {
                 setValue(e.value);
             } else {
                 setValueError(true);
@@ -53,9 +53,11 @@ function CreateTransferModal({visible, setVisible}: ModalProps) {
         let targetCategory = categories.incomes.find((category) => {
             return category.name === "Internal Transfer"
         })
+
         if (sourceWalletId && targetWalletId && sourceCategory && targetCategory && value) {
             await dispatch(createTransferThunk(new CreateTransferDto(sourceWalletId, targetWalletId, sourceCategory.id, targetCategory.id, value))).then(() => {
                 dispatch(getWalletsThunk(user.id));
+                dispatch(getGoalsThunk(user.id));
                 setVisible(false);
             });
         }
@@ -94,7 +96,7 @@ function CreateTransferModal({visible, setVisible}: ModalProps) {
                     <InputNumber
                         id={"transfer-value"}
                         mode="currency"
-                        currency="PLN"
+                        currency={user.currency}
                         inputId="currency-pl"
                         value={value}
                         onChange={(e) => handleValueChange(e)}

@@ -67,7 +67,7 @@ function CreateSavingsGoalModal({visible, setVisible}: ModalProps) {
                     <InputNumber
                         id={"transfer-value"}
                         mode="currency"
-                        currency="PLN"
+                        currency={user.currency}
                         inputId="currency-pl"
                         value={value}
                         onChange={(e) => {

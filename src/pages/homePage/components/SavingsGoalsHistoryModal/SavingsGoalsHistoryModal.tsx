@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {Dialog} from "primereact/dialog";
-import {Paginator} from "primereact/paginator";
+import {Paginator, PaginatorPageChangeEvent} from "primereact/paginator";
 import {ModalProps, SavingsGoal} from "../../../../types.ts";
 import SavingsGoalCard from "../SavingsGoal/SavingsGoalCard/SavingsGoalCard.tsx";
 import './SavingsGoalsHistoryModal.scss';
@@ -13,7 +13,7 @@ export interface SavingsGoalssHistoryModalProps extends ModalProps {
 function SavingsGoalsHistoryModal({visible, setVisible, goals, currency}: SavingsGoalssHistoryModalProps) {
     const [first, setFirst] = useState(0);
 
-    const handlePageChange = (event) => {
+    const handlePageChange = (event: PaginatorPageChangeEvent) => {
         setFirst(event.first);
     };
 

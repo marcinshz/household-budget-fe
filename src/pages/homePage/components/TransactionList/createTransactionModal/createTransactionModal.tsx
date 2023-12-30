@@ -61,7 +61,7 @@ function CreateTransactionModal({type, visible, setVisible}: ModalProps) {
                         <InputNumber
                             id={"value"}
                             mode="currency"
-                            currency="PLN"
+                            currency={user.currency}
                             inputId="currency-pl"
                             value={value}
                             onChange={(e) => {

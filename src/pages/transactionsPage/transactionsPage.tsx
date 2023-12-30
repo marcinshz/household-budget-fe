@@ -23,7 +23,7 @@ function TransactionsPage() {
 
     return (
         <div className="transactions-page">
-            <Navbar user={user}/>
+            <Navbar/>
             <div className="transactions-page__content">
                 <WalletList/>
                 <div className="transactions-page__content__visualisations">

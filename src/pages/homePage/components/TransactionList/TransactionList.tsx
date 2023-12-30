@@ -5,7 +5,7 @@ import CreateTransactionModal from "./createTransactionModal/createTransactionMo
 import {Tooltip} from "primereact/tooltip";
 import './TransactionList.scss';
 import {format} from 'date-fns';
-import {Paginator} from "primereact/paginator";
+import {Paginator, PaginatorPageChangeEvent} from "primereact/paginator";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../redux/store.ts";
 
@@ -20,7 +20,7 @@ function TransactionList({transactions, type}: TransactionListProps) {
     const {user} = useSelector((state: RootState) => {
         return {user: state.user};
     });
-    const handlePageChange = (event) => {
+    const handlePageChange = (event: PaginatorPageChangeEvent) => {
         setFirst(event.first);
     };
 

@@ -18,14 +18,15 @@ function SavingsGoals() {
     function filterGoals(goals: SavingsGoal[], type: GoalType) {
         return goals.filter((goal) => {
             if (type === GoalType.CURRENT) {
-                return new Date(goal.deadline) < new Date();
-            } else {
                 return new Date(goal.deadline) >= new Date();
+            } else {
+                return new Date(goal.deadline) < new Date();
             }
         })
     }
 
     let currentGoals = filterGoals(goals, GoalType.CURRENT);
+
 
     return (
         <div className="savings-goals">

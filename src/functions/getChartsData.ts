@@ -1,5 +1,4 @@
-import {BalanceStamp, PieChartData, StackBarData, TransactionsGrouped} from "../types.ts";
-import {WalletListItem} from "../../../../types.ts";
+import {BalanceStamp, PieChartData, StackBarData, TransactionsGrouped, WalletListItem} from "../types.ts";
 
 export function getTransactionChartsDataForYear(transactionsGrouped: TransactionsGrouped, year: number) {
     let categoryLabels: string[] = [];
@@ -166,11 +165,11 @@ export function getBalanceChartDataForYear(wallets: WalletListItem[], year: numb
     let labels = Array.from({length: 12}, (_, index) => (index + 1).toString() + "." + year);
     let data = Array.from({length: 12}, () => 0);
 
-    walletsChecked.forEach((wallet, walletIndex) => {
+    walletsChecked.forEach((wallet) => {
         labels.forEach((_value, monthIndex) => {
             const month = monthIndex + 1;
             let latest: BalanceStamp | null = null;
-            wallet.balanceStamps.forEach((stamp: BalanceStamp, index: number) => {
+            wallet.balanceStamps.forEach((stamp: BalanceStamp) => {
                 const stampMonth = new Date(stamp.createdAt).getMonth() + 1;
                 const stampYear = new Date(stamp.createdAt).getFullYear();
 
@@ -204,12 +203,11 @@ export function getBalanceChartDataForMonth(wallets: WalletListItem[], year: num
     let labels = Array.from({length: current ? currentDay : length}, (_, index) => (index + 1).toString() + "." + month);
     let data = Array.from({length: current ? currentDay : length}, () => 0);
     //14.12 wallet 3 nie ma stampa
-    walletsChecked.forEach((wallet, walletIndex) => {
+    walletsChecked.forEach((wallet) => {
         labels.forEach((_value, dayIndex) => {
             const day = dayIndex + 1;
             let latest: BalanceStamp | null = null;
-            let latestLastMonth: BalanceStamp | null = null;
-            wallet.balanceStamps.forEach((stamp: BalanceStamp, index: number) => {
+            wallet.balanceStamps.forEach((stamp: BalanceStamp) => {
                 const stampDay = new Date(stamp.createdAt).getDate();
                 const stampMonth = new Date(stamp.createdAt).getMonth() + 1;
                 const stampYear = new Date(stamp.createdAt).getFullYear();

@@ -3,7 +3,7 @@ import {SavingsGoal} from "../../../../../types.ts";
 import {Card} from "primereact/card";
 import {format} from "date-fns";
 import {ProgressBar} from "primereact/progressbar";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 export type SavingsGoalCardProps = {
     goal: SavingsGoal,
@@ -12,6 +12,12 @@ export type SavingsGoalCardProps = {
 
 function SavingsGoalCard({goal, currency}: SavingsGoalCardProps) {
     const [currentValue, setCurrentValue] = useState(0);
+
+    useEffect(() => {
+        if (goal && goal.wallet && goal.wallet.balanceStamps.length > 0) {
+            setCurrentValue(goal.wallet.balanceStamps[0].balance);
+        }
+    }, [goal]);
 
     return (
         <Card title={goal.name}
