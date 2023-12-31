@@ -128,7 +128,7 @@ export const getOverview = async (userId: string, wallets: WalletListItem[]): Pr
     expenses: Expense[],
     expensesGrouped: TransactionsGrouped,
 }> => {
-    return await fetch(api_url + 'wallet/user-wallets-overview-test', {
+    return await fetch(api_url + 'wallet/user-wallets-overview', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
