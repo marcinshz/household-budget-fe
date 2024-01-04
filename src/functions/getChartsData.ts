@@ -165,6 +165,7 @@ export function getBalanceChartDataForYear(wallets: WalletListItem[], year: numb
     let labels = Array.from({length: 12}, (_, index) => (index + 1).toString() + "." + year);
     let data = Array.from({length: 12}, () => 0);
 
+    //istnieje mozliwosc latwego przerobienia tego na wykres z kilkoma liniami jezeli zmienie forEach na ma
     walletsChecked.forEach((wallet) => {
         labels.forEach((_value, monthIndex) => {
             const month = monthIndex + 1;
@@ -202,7 +203,6 @@ export function getBalanceChartDataForMonth(wallets: WalletListItem[], year: num
 
     let labels = Array.from({length: current ? currentDay : length}, (_, index) => (index + 1).toString() + "." + month);
     let data = Array.from({length: current ? currentDay : length}, () => 0);
-    //14.12 wallet 3 nie ma stampa
     walletsChecked.forEach((wallet) => {
         labels.forEach((_value, dayIndex) => {
             const day = dayIndex + 1;

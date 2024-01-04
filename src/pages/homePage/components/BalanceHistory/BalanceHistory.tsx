@@ -77,7 +77,7 @@ function BalanceHistory({homePage}: BalanceHistoryProps) {
     return (
         <div className="balance-history">
             <div className={"balance-history__header"}>
-                <h2>Balance History </h2>
+                <h2>Balance History {month ? month + '.' + year : year}</h2>
                 <div className={"balance-history__header__buttons"}>
                     {homePage &&
                         <Button size="small" label="See more" onClick={() => {
