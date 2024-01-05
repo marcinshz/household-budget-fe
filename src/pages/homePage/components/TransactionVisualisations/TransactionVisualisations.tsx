@@ -12,6 +12,7 @@ import {
 import {useNavigate} from "react-router-dom";
 import {TreeSelect, TreeSelectChangeEvent} from "primereact/treeselect";
 import {getTransactionDateSelectOptions} from "../../../../functions/getTransactionDateSelectOptions.ts";
+import {MyChart} from "../../../../chart.tsx";
 
 type TransactionVisualisationsProps = {
     transactionsGrouped: {
@@ -54,7 +55,6 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
         datasets: {
             data: number[],
             label: string,
-            backgroundColor: string[]
         }[]
     }>()
     const [dateFilters, setDateFilters] = useState<{
@@ -184,13 +184,11 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
             datasets: [
                 {
                     data: [incomeTotalValue],
-                    backgroundColor: ["green"],
                     label: "Incomes"
                 },
                 {
                     data: [expenseTotalValue],
                     label: "Expenses",
-                    backgroundColor: ["red"],
                 }
             ]
         })
@@ -282,6 +280,10 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
                                         usePointStyle: true
                                     },
                                     position: 'bottom'
+                                },
+                                autocolors: {
+                                    enabled: true,
+                                    mode: 'data',
                                 }
                             },
                             responsive: true,
@@ -300,6 +302,11 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
                                     usePointStyle: true
                                 },
                                 position: 'bottom'
+                            },
+                            autocolors: {
+                                enabled: true,
+                                mode: 'data',
+                                offset: 5
                             }
                         },
                         responsive: true,
@@ -314,29 +321,33 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
             </div>
 
             {!dateFilters.day && stackBarData && !(stackBarData.incomes.labels.length === 0 && stackBarData.expenses.labels.length === 0) &&
-                <Chart type="bar"
-                       data={transactionVariant === StackBarVariant.INCOME ? stackBarData.incomes : stackBarData.expenses}
-                       options={{
-                           type: 'bar',
-                           plugins: {
-                               title: {
-                                   display: true,
-                                   text: 'Share of each category by day'
-                               },
-                           },
-                           options: {
-                               responsive: true,
-                               interaction: {
-                                   intersect: false,
-                               },
-                               scales: {
-                                   y: {
-                                       stacked: true,
-                                       beginAtZero: true
-                                   }
-                               }
-                           }
-                       }}/>}
+                <MyChart type="bar"
+                         data={transactionVariant === StackBarVariant.INCOME ? stackBarData.incomes : stackBarData.expenses}
+                         options={{
+                             type: 'bar',
+                             plugins: {
+                                 title: {
+                                     display: true,
+                                     text: `Share of each category by ${dateFilters.month ? "day" : "month"}`
+                                 },
+                                 autocolors: {
+                                     enabled: true,
+                                     mode: 'dataset'
+                                 }
+                             },
+                             options: {
+                                 responsive: true,
+                                 interaction: {
+                                     intersect: false,
+                                 },
+                                 scales: {
+                                     y: {
+                                         stacked: true,
+                                         beginAtZero: true
+                                     }
+                                 }
+                             }
+                         }}/>}
         </div>
     );
 }
