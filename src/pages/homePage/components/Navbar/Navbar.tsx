@@ -96,7 +96,6 @@ function Navbar() {
                             onClick={() => handleOpenDialog(TransactionType.EXPENSE)}/>
                     <Button label='Create Income Categories' link size="large"
                             onClick={() => handleOpenDialog(TransactionType.INCOME)}/>
-                    <Button label='Financial Tips' link size="large"/>
                     <Button label='Sign out' link size="large" onClick={() => handleSignOut()}/>
                 </div>
 

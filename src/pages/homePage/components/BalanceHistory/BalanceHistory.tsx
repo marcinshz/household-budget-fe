@@ -110,7 +110,7 @@ function BalanceHistory({homePage}: BalanceHistoryProps) {
                 },
                 elements: {
                     point: {
-                        radius: 3
+                        radius: 5
                     }
                 }
             }}/>

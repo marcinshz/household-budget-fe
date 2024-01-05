@@ -164,9 +164,9 @@ export function getBalanceChartDataForYear(wallets: WalletListItem[], year: numb
 
     let labels = Array.from({length: 12}, (_, index) => (index + 1).toString() + "." + year);
     let data = Array.from({length: 12}, () => 0);
+    let eachWalletData = Array.from({length: walletsChecked.length}, () => Array.from({length: 12}, () => 0));
 
-    //istnieje mozliwosc latwego przerobienia tego na wykres z kilkoma liniami jezeli zmienie forEach na ma
-    walletsChecked.forEach((wallet) => {
+    walletsChecked.forEach((wallet, walletIndex) => {
         labels.forEach((_value, monthIndex) => {
             const month = monthIndex + 1;
             let latest: BalanceStamp | null = null;
@@ -180,7 +180,10 @@ export function getBalanceChartDataForYear(wallets: WalletListItem[], year: numb
                     } else latest = stamp;
                 }
             })
-            if (latest) data[monthIndex] = data[monthIndex] + (latest as BalanceStamp).balance;
+            if (latest) {
+                eachWalletData[walletIndex][monthIndex] = (latest as BalanceStamp).balance;
+                data[monthIndex] = data[monthIndex] + (latest as BalanceStamp).balance;
+            }
         })
     })
     return {
@@ -189,7 +192,13 @@ export function getBalanceChartDataForYear(wallets: WalletListItem[], year: numb
             {
                 label: 'Balance',
                 data: data
-            }
+            },
+            ...eachWalletData.map((data, index) => {
+                return {
+                    label: walletsChecked[index].name,
+                    data: data
+                }
+            })
         ]
     }
 }
@@ -202,8 +211,9 @@ export function getBalanceChartDataForMonth(wallets: WalletListItem[], year: num
     const length = new Date(year, month, 0).getDate();
 
     let labels = Array.from({length: current ? currentDay : length}, (_, index) => (index + 1).toString() + "." + month);
-    let data = Array.from({length: current ? currentDay : length}, () => 0);
-    walletsChecked.forEach((wallet) => {
+    let totalData = Array.from({length: current ? currentDay : length}, () => 0);
+    let eachWalletData = Array.from({length: walletsChecked.length}, () => Array.from({length: current ? currentDay : length}, () => 0));
+    walletsChecked.forEach((wallet, walletIndex) => {
         labels.forEach((_value, dayIndex) => {
             const day = dayIndex + 1;
             let latest: BalanceStamp | null = null;
@@ -218,16 +228,27 @@ export function getBalanceChartDataForMonth(wallets: WalletListItem[], year: num
                     } else latest = stamp;
                 }
             })
-            if (latest) data[dayIndex] = data[dayIndex] + (latest as BalanceStamp).balance;
+
+            if (latest) {
+                eachWalletData[walletIndex][dayIndex] = (latest as BalanceStamp).balance;
+                totalData[dayIndex] = totalData[dayIndex] + (latest as BalanceStamp).balance;
+            }
         })
     })
+
     return {
         labels,
         datasets: [
             {
-                label: 'Balance',
-                data: data
-            }
+                label: 'Total balance',
+                data: totalData
+            },
+            ...walletsChecked.map((wallet, walletIndex) => {
+                return {
+                    label: wallet.name,
+                    data: eachWalletData[walletIndex]
+                }
+            })
         ]
     }
 }
