@@ -28,6 +28,9 @@ function BalanceHistory({homePage}: BalanceHistoryProps) {
     const [selectNodes, setSelectNodes] = useState<SelectNode[]>([]);
     const [selectNode, setSelectNode] = useState<string>("");
     const [showTreeSelect, setShowTreeSelect] = useState<boolean>(false);
+    const {user} = useSelector((state: RootState) => {
+        return {user: state.user};
+    })
 
     useEffect(() => {
         if (wallets && wallets.length) {
@@ -111,6 +114,20 @@ function BalanceHistory({homePage}: BalanceHistoryProps) {
                 elements: {
                     point: {
                         radius: 5
+                    }
+                },
+                scales: {
+                    y: {
+                        title: {
+                            display: true,
+                            text: `Balance [${user.currency}]`
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
                     }
                 }
             }}/>

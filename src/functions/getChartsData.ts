@@ -190,7 +190,7 @@ export function getBalanceChartDataForYear(wallets: WalletListItem[], year: numb
         labels,
         datasets: [
             {
-                label: 'Balance',
+                label: 'Total balance',
                 data: data
             },
             ...eachWalletData.map((data, index) => {

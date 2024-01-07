@@ -13,6 +13,8 @@ import {useNavigate} from "react-router-dom";
 import {TreeSelect, TreeSelectChangeEvent} from "primereact/treeselect";
 import {getTransactionDateSelectOptions} from "../../../../functions/getTransactionDateSelectOptions.ts";
 import {MyChart} from "../../../../chart.tsx";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../../redux/store.ts";
 
 type TransactionVisualisationsProps = {
     transactionsGrouped: {
@@ -55,6 +57,7 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
         datasets: {
             data: number[],
             label: string,
+            backgroundColor: string
         }[]
     }>()
     const [dateFilters, setDateFilters] = useState<{
@@ -70,6 +73,10 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
     const [selectNodes, setSelectNodes] = useState<SelectNode[]>([]);
     const [selectNode, setSelectNode] = useState<string>("");
     const [showTreeSelect, setShowTreeSelect] = useState<boolean>(false);
+    const {user} = useSelector((state: RootState) => {
+        return {user: state.user};
+    })
+
     useEffect(() => {
         const {year, month, day} = dateFilters;
         createVisualisationsData(year, month, day);
@@ -180,15 +187,17 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
             }
         }
         setTotalValueBarData({
-            labels: ["Total values"],
+            labels: [""],
             datasets: [
                 {
                     data: [incomeTotalValue],
-                    label: "Incomes"
+                    label: "Incomes",
+                    backgroundColor: 'green'
                 },
                 {
                     data: [expenseTotalValue],
                     label: "Expenses",
+                    backgroundColor: 'red'
                 }
             ]
         })
@@ -238,11 +247,22 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
         }
     }
 
+    const footerTooltip = (tooltipItems: any) => {
+        let sum = 0;
+
+        const stackValues = tooltipItems[0].parsed._stacks.y._visualValues;
+
+        for (const [_, value] of Object.entries(stackValues)) {
+            sum += value as number;
+        }
+
+        return 'Sum: ' + sum;
+    };
 
     return (
         <div className="transaction-visualisations">
             <div className={"transaction-visualisations__header"}>
-                <h2>Transactions</h2>
+                <h2>Transactions {dateFilters.month ? dateFilters.month + '.' + dateFilters.year : dateFilters.year}</h2>
                 <div className={"transaction-visualisations__header__buttons"}>
                     <SelectButton value={transactionVariant} onChange={(e) => setTransactionVariant(e.value)}
                                   options={[StackBarVariant.EXPENSE, StackBarVariant.INCOME]}/>
@@ -306,8 +326,17 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
                             autocolors: {
                                 enabled: true,
                                 mode: 'data',
-                                offset: 5
-                            }
+                                offset: 40
+                            },
+
+                        },
+                        scales: {
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: `Value [${user.currency}]`,
+                                }
+                            },
                         },
                         responsive: true,
                         width: '50%'
@@ -333,21 +362,35 @@ function TransactionVisualisations({transactionsGrouped, homePage}: TransactionV
                                  autocolors: {
                                      enabled: true,
                                      mode: 'dataset'
+                                 },
+                                 tooltip: {
+                                     callbacks: {
+                                         footer: footerTooltip
+                                     }
                                  }
                              },
-                             options: {
-                                 responsive: true,
-                                 interaction: {
-                                     intersect: false,
+                             responsive: true,
+                             interaction: {
+                                 intersect: false,
+                             },
+                             scales: {
+                                 y: {
+                                     stacked: true,
+                                     beginAtZero: true,
+                                     title: {
+                                         display: true,
+                                         text: `Value [${user.currency}]`,
+                                     }
                                  },
-                                 scales: {
-                                     y: {
-                                         stacked: true,
-                                         beginAtZero: true
+                                 x: {
+                                     title: {
+                                         display: true,
+                                         text: 'Time',
                                      }
                                  }
                              }
-                         }}/>}
+                         }}
+                />}
         </div>
     );
 }
