@@ -8,7 +8,7 @@ import HomePage from './pages/homePage/homePage.tsx';
 import {Provider} from 'react-redux';
 import store from './redux/store.ts';
 import ErrorPage from './pages/errorPage/errorPage.tsx';
-import {AuthHandler} from "./auth.ts";
+import {AuthHandler} from "./functions/auth.ts";
 import TransactionsPage from "./pages/transactionsPage/transactionsPage.tsx";
 import BalancePage from "./pages/BalancePage/BalancePage.tsx";
 

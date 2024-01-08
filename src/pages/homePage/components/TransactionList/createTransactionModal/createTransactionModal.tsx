@@ -28,17 +28,21 @@ function CreateTransactionModal({type, visible, setVisible}: ModalProps) {
         return {user: state.user, wallets: state.wallets, categories: state.categories};
     })
     const dispatch = useDispatch<AppDispatch>();
+    const [error, setError] = useState(false);
 
     async function handleSubmit() {
         if (value && name && categoryId && walletId) {
             const transaction = new CreateTransactionDto(walletId, name, value, categoryId, type, note);
             createTransaction(transaction).then((response) => {
+                console.log(response)
                 if (response) {
                     dispatch(getWalletsThunk(user.id));
                     dispatch(getGoalsThunk(user.id));
                     if (type === TransactionType.EXPENSE) dispatch(getLimitsThunk(user.id));
                     setVisible(false)
                 }
+            }).catch(() => {
+                setError(true)
             })
         }
     }
@@ -120,10 +124,13 @@ function CreateTransactionModal({type, visible, setVisible}: ModalProps) {
                         />
                     </div>
                 </div>
+                {error &&
+                    <div className="create-transaction-modal__error">No internet connection, your transaction is saved
+                        and will be uploaded to database later</div>}
                 <Button
                     onClick={handleSubmit}
                     style={{justifyContent: 'center'}}
-                    disabled={name === "" || categoryId === "" || walletId === ""}
+                    disabled={name === "" || categoryId === "" || walletId === "" || error}
                 >
                     Add {type}
                 </Button>

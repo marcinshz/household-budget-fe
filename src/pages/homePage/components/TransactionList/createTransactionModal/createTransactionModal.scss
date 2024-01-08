@@ -3,6 +3,10 @@
   flex-direction: column;
   gap: 24px;
 
+  &__error {
+    color: red;
+  }
+
   &__container {
     display: flex;
     flex-direction: column;

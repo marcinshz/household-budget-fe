@@ -148,6 +148,17 @@ export const createTransaction = async (createTransactionDto: CreateTransactionD
         body: JSON.stringify(createTransactionDto)
     }).then(res => res.json()).then(data => {
         return data;
+    }).catch((error) => {
+        let savedTransactions = localStorage.getItem('savedTransactions');
+        if (savedTransactions) {
+            const savedTransactionsParsed: CreateTransactionDto[] = JSON.parse(savedTransactions);
+            savedTransactionsParsed.push(createTransactionDto);
+            localStorage.setItem('savedTransactions', JSON.stringify(savedTransactionsParsed));
+        } else {
+            localStorage.setItem('savedTransactions', JSON.stringify([createTransactionDto]));
+            console.log(localStorage.getItem('savedTransactions'));
+        }
+        throw error;
     })
 }
 
