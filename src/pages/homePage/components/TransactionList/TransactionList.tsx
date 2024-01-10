@@ -43,7 +43,7 @@ function TransactionList({transactions, type}: TransactionListProps) {
                 {transactions.length ? <ul className="transaction-list__content__list">
                         {transactions.slice(first, first + 5).map((transaction) => (
                             <li className={`transaction-list__content__list__item`}
-                                data-pr-tooltip={transaction.note /*TODO fix note*/}
+                                data-pr-tooltip={transaction.note}
                                 data-pr-position="top"
                                 key={transaction.id}
                             >
